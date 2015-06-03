@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <telefono>0</telefono>
+    <celular>1</celular>
+    <nombre>2</nombre>
+    <direccion>3</direccion>
+    <ciudad>4</ciudad>
+    <estado>5</estado>
+    <pais>6</pais>
+    <texto>7</texto>
+    <longitud>8</longitud>
+    <latitud>9</latitud>
+</root>

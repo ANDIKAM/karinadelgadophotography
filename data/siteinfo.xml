@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <titulo>Karina Delgado Photography</titulo>
+    <creditos>ANDIKAM SAS, 2015, Colombia, contacto@andikam.com</creditos>
+    <descripcion>ANDIKAM SAS, 2015, Colombia, contacto@andikam.com</descripcion>
+    <slider>
+        <imagen>
+            <id>1</id>
+            <order>1</order>
+            <url>imagen.php</url>
+            <alt>imagen1</alt>
+            <nombre>Nombre1</nombre>
+            <ancho>100%</ancho>
+            <alto>100%</alto>
+        </imagen>
+        <imagen>
+            <id>2</id>
+            <order>2</order>
+            <url>imagen.php</url>
+            <alt>imagen2</alt>
+            <nombre>Nombre2</nombre>
+            <ancho>100%</ancho>
+            <alto>100%</alto>
+        </imagen>
+        <imagen>
+            <id>3</id>
+            <order>2</order>
+            <url>imagen3.php</url>
+            <alt>imagen3</alt>
+            <nombre>Nombre3</nombre>
+            <ancho>100%</ancho>
+            <alto>100%</alto>
+        </imagen>
+    </slider>
+</root>
