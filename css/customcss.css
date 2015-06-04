@@ -583,6 +583,26 @@ div.background{
         opacity: .5;
         cursor: pointer;
     }
+    .leaves-left{
+        position:fixed;
+        background-repeat: repeat-y;
+        top:0px;
+        width:150px;
+        left:100px;
+        background-size: auto 100%;
+        background-position: right;
+        height: 100%;
+    }
+    .leaves-right{
+        position:fixed;
+        background-repeat: repeat-y;
+        top:0px;
+        width:150px;
+        right:0px;
+        background-size: auto 100%;
+        background-position: left;
+        height: 100%;
+    }
     .arbol-left{
         background-image: url('../img/tree-right.png');
         position:fixed;

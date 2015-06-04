@@ -9,7 +9,10 @@ include_once dirname(__FILE__).'/basics/login.php';
         <title><?php echo $SITE->getTitulo();?></title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/customcss.css">
+        <link rel="stylesheet" type="text/css" href="css/3d-falling-leaves.css">
         <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/3d-falling-leaves.js"></script>
+        <script src="js/rotate3Di.min.js"></script>
         <script type="text/javascript" src="js/jquery.jplayer.js"></script>
         <script src="js/global.js"></script>
         <script src="js/index.js"></script>
@@ -28,7 +31,8 @@ include_once dirname(__FILE__).'/basics/login.php';
             <img src="galeria/08.jpg" />
             <img src="galeria/09.jpg" />
         </div>
-
+        <div class="leaves-right"></div>
+        <div class="leaves-left"></div>
         <div class="arbol-right"></div>
         <div class="arbol-left"></div>
         <div class="background"></div>
