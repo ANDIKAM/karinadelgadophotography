@@ -398,6 +398,7 @@ class loginfo{
 }
 class contactinfo extends HTMLUtils{
     private $telefono;
+    PRIVATE $descripcion;
     private $celular;
     private $nombre;
     private $direccion;
@@ -413,19 +414,19 @@ class contactinfo extends HTMLUtils{
     function contactinfo($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
-        $this->PathToFile = $URLDoc.'/data/contactinfo.xml';
-        $XML=file_get_contents($this->PathToFile);
-        $XML = new SimpleXMLElement($XML);
-        $this->telefono = strval($XML->telefono);
-        $this->celular = strval($XML->celular);
-        $this->nombre = strval($XML->nombre);
-        $this->direccion = strval($XML->direccion);
-        $this->ciudad = strval($XML->ciudad);
-        $this->estado = strval($XML->estado);
-        $this->pais = strval($XML->pais);
-        $this->texto = strval($XML->texto);
-        $this->longitud = strval($XML->longitud);
-        $this->latitud = strval($XML->latitud);
+        $this->DataBase = new DataBase();
+        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM contactinfo");
+        $this->telefono = $RESULTADO[0]["telefono"];
+        $this->celular = $RESULTADO[0]["celular"];
+        $this->nombre = $RESULTADO[0]["nombre"];
+        $this->direccion = $RESULTADO[0]["direccion"];
+        $this->ciudad = $RESULTADO[0]["ciudad"];
+        $this->estado = $RESULTADO[0]["estado"];
+        $this->pais = $RESULTADO[0]["pais"];
+        $this->texto = $RESULTADO[0]["texto"];
+        $this->longitud = $RESULTADO[0]["longitud"];
+        $this->latitud = $RESULTADO[0]["latitud"];
+        $this->descripcion=$RESULTADO[0]["descripcion"];
     }
     public function getURLDocuments(){
         return $this->URLDoc;
@@ -450,6 +451,8 @@ class contactinfo extends HTMLUtils{
     public function getPais_Raw(){return $this->pais;}
     public function getTexto(){return $this->fromHTMLEntities($this->texto);}
     public function getTexto_Raw(){return $this->texto;}
+    public function getDescripcion(){return $this->fromHTMLEntities($this->descripcion);}
+    public function getDescripcion_Raw(){return $this->descripcion;}
     public function getLongitud(){return $this->fromHTMLEntities($this->longitud);}
     public function getLongitud_Raw(){return $this->longitud;}
     public function getLatitud(){return $this->fromHTMLEntities($this->latitud);}
@@ -471,7 +474,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->telefono=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -481,7 +484,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->celular=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -491,7 +494,17 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->nombre=$var;
-            $this->_UpdateFile();
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    public function setDescripcion($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->descripcion=$var;
+            $this->_Update();
             return true;
         }
         return false;
@@ -501,7 +514,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->direccion=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -511,7 +524,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->ciudad=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -521,7 +534,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->estado=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -531,7 +544,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->pais=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -541,7 +554,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->texto=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -551,7 +564,7 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->longitud=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -561,37 +574,35 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->latitud=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
     }
     
-    private function _UpdateFile(){
-        $xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
-             "<root>\n".
-             "    <telefono>".$this->getTelefono()."</telefono>\n".
-             "    <celular>".$this->getCelular()."</celular>\n".
-             "    <nombre>".$this->getNombre()."</nombre>\n".
-             "    <direccion>".$this->getDireccion()."</direccion>\n".
-             "    <ciudad>".$this->getCiudad()."</ciudad>\n".
-             "    <estado>".$this->getEstado()."</estado>\n".
-             "    <pais>".$this->getPais()."</pais>\n".
-             "    <texto>".$this->getTexto()."</texto>\n".
-             "    <longitud>".$this->getLongitud()."</longitud>\n".
-             "    <latitud>".$this->getLatitud()."</latitud>\n".
-             "</root>\n";
-        $XMLSave = simplexml_load_string($xml);
-        $XMLSave->asXml($this->PathToFile);
+    private function _Update(){
+        $Query = "UPDATE contactinfo SET telefono='',".
+                        "celular='$this->celular',".
+                        "direccion='$this->direccion',".
+                        "ciudad='$this->ciudad',".
+                        "estado='$this->estado',".
+                        "pais='$this->pais',".
+                        "texto='$this->texto',".
+                        "longitud='$this->longitud',".
+                        "latitud='$this->latitud',".
+                        "descripcion='$this->descripcion'";
+        $this->DataBase->ExecQuery($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['CONTACTINFO'] = $this;
         }
     }
 }
-class personalinfo extends HTMLUtils{
+
+class serviciosinfo extends HTMLUtils{
     private $resumen;
     private $mision;
     private $vision;
+    private $firma;
     private $PathToFile;
     private $URLWeb;
     private $URLDoc;
@@ -603,6 +614,7 @@ class personalinfo extends HTMLUtils{
         $this->resumen= $RESULTADO[0]["resumen"];
         $this->mision= $RESULTADO[0]["mision"];
         $this->vision= $RESULTADO[0]["vision"];
+        $this->firma= $RESULTADO[0]["firma"];
     }
     public function getURLDocuments(){
         return $this->URLDoc;
@@ -614,6 +626,8 @@ class personalinfo extends HTMLUtils{
     public function getResumen(){return $this->fromHTMLEntities($this->resumen);}
     public function getMision(){return $this->fromHTMLEntities($this->mision);}
     public function getVision(){return $this->fromHTMLEntities($this->vision);}
+    public function getFirma(){return $this->fromHTMLEntities($this->firma);}
+    public function getFirma_Raw(){return $this->firma;}
     public function getResumen_Raw(){return $this->resumen;}
     public function getMision_Raw(){return $this->mision;}
     public function getVision_Raw(){return $this->vision;}
@@ -648,10 +662,165 @@ class personalinfo extends HTMLUtils{
         }
         return false;
     }
-    private function _UpdateFile(){
+    public function setFirma($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->firma=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    private function _Update(){
         $Query = "UPDATE personalinfo SET resumen='$this->resumen',".
                  "mision='$this->mision',".
-                 "vision='$this->vision'";
+                 "vision='$this->vision',".
+                 "firma='$this->firma'";
+        $this->DataBase->ExecQuery($Query);
+        if (session_status()==PHP_SESSION_ACTIVE){
+            $_SESSION['PERSONALINFO'] = $this;
+        }
+    }
+}
+
+class serviciosinfo extends HTMLUtils{
+    private $servicios;
+    private $PathToFile;
+    private $URLWeb;
+    private $URLDoc;
+    function contactinfo($URLDoc,$URLWeb){
+        $this->URLWeb=$URLWeb;
+        $this->URLDoc=$URLDoc;
+        $this->DataBase = new DataBase();
+        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM serviciosinfo");
+        $this->servicios= $RESULTADO;
+    }
+    public function getURLDocuments(){
+        return $this->URLDoc;
+    }
+    public function getURLWeb(){
+        return $this->URLWeb;
+    }
+    //GETS
+    public function getServicios(){
+        $VectTemp=$this->servicios;
+        for($i=0;$i<count($VectTemp);$i++){
+            $VectTemp[$i]["descripcion"]=$this->fromHTMLEntities($VectTemp[$i]["descripcion"]);
+        }
+        return $VectTemp;
+    }
+    public function getServicios_Raw(){
+        return $this->servicios;
+    }
+    //Delete
+    public function deleteServicio($id){
+        $Query = "DELETE from serviciosinfo ".
+                 "WHERE id=$id";
+        $this->DataBase->ExecQuery($Query);
+        if (session_status()==PHP_SESSION_ACTIVE){
+            $_SESSION['SERVICIOSINFO'] = $this;
+        }
+    }
+    private function UpdateServicio($id,$Text){
+        $Query = "UPDATE serviciosinfo SET descripcion='$Text' ".
+                 "WHERE id=$id";
+        $this->DataBase->ExecQuery($Query);
+        if (session_status()==PHP_SESSION_ACTIVE){
+            $_SESSION['SERVICIOSINFO'] = $this;
+        }
+    }
+    //SETS
+
+    public function setServicio($id,$Servicio){
+        $this->UpdateServicio($id, $Servicio);
+    }
+    public function setServicios($array){
+        for($i=0;$i<count($array);$i++){
+            $this->setServicio($array["id"],$array["descripcion"]);
+        }
+    }
+}
+
+class personalinfo extends HTMLUtils{
+    private $resumen;
+    private $mision;
+    private $vision;
+    private $firma;
+    private $PathToFile;
+    private $URLWeb;
+    private $URLDoc;
+    function contactinfo($URLDoc,$URLWeb){
+        $this->URLWeb=$URLWeb;
+        $this->URLDoc=$URLDoc;
+        $this->DataBase = new DataBase();
+        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM personalinfo");
+        $this->resumen= $RESULTADO[0]["resumen"];
+        $this->mision= $RESULTADO[0]["mision"];
+        $this->vision= $RESULTADO[0]["vision"];
+        $this->firma= $RESULTADO[0]["firma"];
+    }
+    public function getURLDocuments(){
+        return $this->URLDoc;
+    }
+    public function getURLWeb(){
+        return $this->URLWeb;
+    }
+    //GETS
+    public function getResumen(){return $this->fromHTMLEntities($this->resumen);}
+    public function getMision(){return $this->fromHTMLEntities($this->mision);}
+    public function getVision(){return $this->fromHTMLEntities($this->vision);}
+    public function getFirma(){return $this->fromHTMLEntities($this->firma);}
+    public function getFirma_Raw(){return $this->firma;}
+    public function getResumen_Raw(){return $this->resumen;}
+    public function getMision_Raw(){return $this->mision;}
+    public function getVision_Raw(){return $this->vision;}
+    //SETS
+    public function setResumen($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->resumen=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    public function setMision($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->mision=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    public function setVision($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->vision=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    public function setFirma($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->firma=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    private function _Update(){
+        $Query = "UPDATE personalinfo SET resumen='$this->resumen',".
+                 "mision='$this->mision',".
+                 "vision='$this->vision',".
+                 "firma='$this->firma'";
         $this->DataBase->ExecQuery($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['PERSONALINFO'] = $this;
