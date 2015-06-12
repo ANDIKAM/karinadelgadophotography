@@ -82,10 +82,10 @@ class siteinfo extends galeriainfo{
         return false;
     }
     private function _Update(){
-            $Query = "UPDATE siteinfo SET titulo=$this->titulo,".
-                 "creditos=$this->creditos,".
-                 "emailURL=$this->emailURL,".
-                 "descripcion=$this->descipcion";
+            $Query = "UPDATE siteinfo SET titulo='$this->titulo',".
+                 "creditos='$this->creditos',".
+                 "emailURL='$this->emailURL',".
+                 "descripcion='$this->descipcion'";
         $this->DataBase->ExecQuery($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['SYSTEMINFO'] = $this;
@@ -180,6 +180,18 @@ class HTMLUtils{
         $STR = str_replace("©", "&copy;", $STR);
         //®
         $STR = str_replace("®", "&reg;", $STR);
+        //'
+        $STR = str_replace("'", "&#39;", $STR);
+        //"
+        $STR = str_replace("\"", "&quot;", $STR);
+        //.
+        $STR = str_replace(".", "&#46;", $STR);
+        //;
+        $STR = str_replace(";", "&#59;", $STR);
+        //:
+        $STR = str_replace(":", "&#58;", $STR);
+        //,
+        $STR = str_replace(",", "&#44;", $STR);
         $STR = $this->LineBreakstoBR($STR);
         return $STR;
     }
@@ -199,6 +211,18 @@ class HTMLUtils{
         $STR = str_replace("&copy;", "©", $STR);
         //®
         $STR = str_replace("&reg;", "®", $STR);
+        //'
+        $STR = str_replace( "&#39;","'", $STR);
+        //"
+        $STR = str_replace("&quot;","\"",  $STR);
+        //.
+        $STR = str_replace( "&#46;",".", $STR);
+        //;
+        $STR = str_replace("&#59;",";",  $STR);
+        //:
+        $STR = str_replace("&#58;",":",  $STR);
+        //,
+        $STR = str_replace( "&#44;",",", $STR);
         return $STR;
     }
 }
@@ -257,10 +281,13 @@ class loginfo{
             if (!isset($_SESSION['LOGINFO'])) {
                 $_SESSION['LOGINFO'] = $this;
             } 
-            if (!isset($_SESSION['SYSTEMINFO']) || $_SESSION['SYSTEMINFO']->getTitulo()=="") {
-                $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
-                $_SESSION['SYSTEMINFO'] = $systeminfo;
-            } 
+            //Carga de Informacion del Sistema
+            $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
+            $_SESSION['SYSTEMINFO'] = $systeminfo;
+            //Carga de informacion Personal
+            $personalinfo = new personalinfo($this->URLFullPath,$this->URLWebPath);
+            $_SESSION['PERSONALINFO'] = $personalinfo;
+            
             $_SESSION['LOGIN_STATUS'] = "ACTIVO";
             $_SESSION['ADMIN'] = "ACTIVO";
             return true;
@@ -276,10 +303,12 @@ class loginfo{
                 if (!isset($_SESSION['LOGINFO'])) {
                     $_SESSION['LOGINFO'] = $this;
                 } 
-                if (!isset($_SESSION['SYSTEMINFO']) || $_SESSION['SYSTEMINFO']->getTitulo()=="") {
-                    $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
-                    $_SESSION['SYSTEMINFO'] = $systeminfo;
-                }
+                //Carga de Informacion del Sistema
+                $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
+                $_SESSION['SYSTEMINFO'] = $systeminfo;
+                //Carga de informacion Personal
+                $personalinfo = new personalinfo($this->URLFullPath,$this->URLWebPath);
+                $_SESSION['PERSONALINFO'] = $personalinfo;
                 $_SESSION['LOGIN_STATUS'] = "ACTIVO";
                 $_SESSION['ADMIN'] = "INACTIVO";
             }else{
@@ -293,6 +322,11 @@ class loginfo{
     public function GetInformacionSistema(){
         if (isset($_SESSION['SYSTEMINFO'])) {
             return $_SESSION['SYSTEMINFO'];
+        }
+    }
+    public function GetInformacionPersonal(){
+        if (isset($_SESSION['PERSONALINFO'])) {
+            return $_SESSION['PERSONALINFO'];
         }
     }
     public function getUsuario(){
@@ -352,10 +386,10 @@ class loginfo{
         return false;
     }
     private function _Update(){
-        $Query = "UPDATE logininfo SET user=$this->usuario,".
-                 "password=$this->password,".
-                 "nombre=$this->nombre,".
-                 "email=$this->correo";
+        $Query = "UPDATE logininfo SET user='$this->usuario',".
+                 "password='$this->password',".
+                 "nombre='$this->nombre',".
+                 "email='$this->correo'";
         $this->DataBase->ExecQuery($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['LOGINFO'] = $this;
@@ -564,12 +598,11 @@ class personalinfo extends HTMLUtils{
     function contactinfo($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
-        $this->PathToFile = $URLDoc.'/data/personalinfo.xml';
-        $XML=file_get_contents($this->PathToFile);
-        $XML = new SimpleXMLElement($XML);
-        $this->resumen= strval($XML->resumen);
-        $this->mision= strval($XML->mision);
-        $this->vision= strval($XML->vision);
+        $this->DataBase = new DataBase();
+        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM personalinfo");
+        $this->resumen= $RESULTADO[0]["resumen"];
+        $this->mision= $RESULTADO[0]["mision"];
+        $this->vision= $RESULTADO[0]["vision"];
     }
     public function getURLDocuments(){
         return $this->URLDoc;
@@ -590,7 +623,7 @@ class personalinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->resumen=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -600,7 +633,7 @@ class personalinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->mision=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
@@ -610,20 +643,16 @@ class personalinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->vision=$var;
-            $this->_UpdateFile();
+            $this->_Update();
             return true;
         }
         return false;
     }
     private function _UpdateFile(){
-        $xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
-             "<root>\n".
-             "    <resumen>".$this->getResumen()."</resumen>\n".
-             "    <mision>".$this->getMision()."</mision>\n".
-             "    <vision>".$this->getVision()."</vision>\n".
-             "</root>";
-        $XMLSave = simplexml_load_string($xml);
-        $XMLSave->asXml($this->PathToFile);
+        $Query = "UPDATE personalinfo SET resumen='$this->resumen',".
+                 "mision='$this->mision',".
+                 "vision='$this->vision'";
+        $this->DataBase->ExecQuery($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['PERSONALINFO'] = $this;
         }

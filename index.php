@@ -35,14 +35,15 @@ include_once dirname(__FILE__).'/basics/login.php';
         <div class="leaves-left"></div>
         <div class="arbol-right"></div>
         <div class="arbol-left"></div>
+        <div class="arbol-movil"></div>
         <div class="background"></div>
         <div class="audioplayer jp-pause">
         </div>
+        <div class="hidden-lg hidden-md menu-mov "></div>
         <div id="flyeffect" class="back-slider visible-lg-block visible-md-block visible-sm-block visible-xs-block">
             <!-- Spinner de carga de fondo-->
             <img id="spinner" class="center-img" src="img/spiner.gif">
             <!-- Menu móvil lateral-->
-            <div class="hidden-lg hidden-md menu-mov"></div>
             <div class="logo hidden-lg hidden-md"></div>
         </div>
         
@@ -52,6 +53,13 @@ include_once dirname(__FILE__).'/basics/login.php';
             <a href=""><div class="rs-instagram"></div>
             <a href=""><div class="rs-500px"></div>
             
+        </div>
+        <div class="menu-movil-container menu-mov-oculto hidden-lg hidden-md">
+                <div class="menu-item-mov"><a href="index.php">Inicio</a></div>
+                <div class="menu-item-mov"><a href="galeria.php">Galer&iacute;a</a></div>
+                <div class="menu-item-mov"><a href="biografia.php">Biograf&iacute;a</a></div>
+                <div class="menu-item-mov"><a href="servicios.php">Servicios</a></div>
+                <div class="menu-item-mov"><a href="contacto.php">Contacto</a></div>
         </div>
         <div class="navbar-dsk hidden-sm hidden-xs">
             <div class="container informacion">

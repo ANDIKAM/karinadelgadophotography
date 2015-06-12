@@ -6,13 +6,16 @@ include_once dirname(__FILE__).'/basics/login.php';
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title><?php echo $SITE->getTitulo();?></title>
+        <title><?php echo $SITE->getTitulo();?> - Biografia</title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/customcss.css">
+        <link rel="stylesheet" type="text/css" href="css/3d-falling-leaves.css">
         <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/3d-falling-leaves.js"></script>
+        <script src="js/rotate3Di.min.js"></script>
         <script type="text/javascript" src="js/jquery.jplayer.js"></script>
         <script src="js/global.js"></script>
-        <script src="js/index.js"></script>
+        <script src="js/biografia.js"></script>
     </head>
     <body>
         <div class="hidden">
@@ -28,18 +31,15 @@ include_once dirname(__FILE__).'/basics/login.php';
             <img src="galeria/08.jpg" />
             <img src="galeria/09.jpg" />
         </div>
-        <div id="flyeffect"></div>
+        <div class="leaves-right"></div>
+        <div class="leaves-left"></div>
+        <div class="arbol-right"></div>
+        <div class="arbol-left"></div>
+        <div class="arbol-movil"></div>
         <div class="background"></div>
         <div class="audioplayer jp-pause">
         </div>
-        <div class="back-slider visible-lg-block visible-md-block visible-sm-block visible-xs-block">
-            <!-- Spinner de carga de fondo-->
-            <img id="spinner" class="center-img" src="img/spiner.gif">
-            <!-- Menu móvil lateral-->
-            <div class="hidden-lg hidden-md menu-mov"></div>
-            <div class="logo hidden-lg hidden-md"></div>
-        </div>
-        
+        <div class="hidden-lg hidden-md menu-mov "></div>
         <div class="container fixClass hidden-sm hidden-xs">
             <div class="logo"></div>
             <a href=""><div class="rs-facebook"></div></a>
@@ -47,14 +47,21 @@ include_once dirname(__FILE__).'/basics/login.php';
             <a href=""><div class="rs-500px"></div>
             
         </div>
+        <div class="menu-movil-container menu-mov-oculto hidden-lg hidden-md">
+                <div class="menu-item-mov"><a href="index.php">Inicio</a></div>
+                <div class="menu-item-mov"><a href="galeria.php">Galer&iacute;a</a></div>
+                <div class="menu-item-mov"><a href="biografia.php">Biograf&iacute;a</a></div>
+                <div class="menu-item-mov"><a href="servicios.php">Servicios</a></div>
+                <div class="menu-item-mov"><a href="contacto.php">Contacto</a></div>
+        </div>
         <div class="navbar-dsk hidden-sm hidden-xs">
-            <div class="container">
+            <div class="container informacion">
                     <!-- Menú normal superior-->
                     <div class="row">
                         <div id="menu-dsk">
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
-                                    <div class="col-lg-6 col-md-6">&nbsp;</div> 
+                                    <div class="col-lg-5 col-md-5"></div>
                                     <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
                                     <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
                                     <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
@@ -67,15 +74,21 @@ include_once dirname(__FILE__).'/basics/login.php';
             </div>
         </div>
         <div class="container">
-            <div class="row">
-                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
-                    <div class="row">
-                        <div class="contenido">
-
-                        </div>
+                <div class="row">
+                    <div class="titulo-pagina">
+                            >> Biograf&iacute;a
+                    </div>
+                    <div class="contenido">
+                        <img class="img-thumbnail foto-biografia" height="331px" width="500px" src="img/biografia.jpg"/>
+                        Muchas gracias por tu visita!<br><br>
+                        Te mereces algo especial para preservar y revivir tus recuerdos, mi trabajo es lograr esa fotografía que capture la esencia de intensa emoción del momento, dirijo una empresa dedicada a la captura de la vida.<br><br>
+                        Nos esforzamos por hacer que cada sesión de fotografía sea emocionante y única, prestamos especial atención a los detalles y a los gustos de cada persona, de esta forma aseguramos que tu personalidad única sea capturada en la película.<br><br>
+                        Estoy aquí para ti a través de las etapas de planificación, miro el mundo con sentido del humor y alegría, me encantan los accesorios divertidos, sombreros lindos, ropa sencilla pero original, soy una luz natural...<br><br>
+                        Espero te guste mi trabajo y que las imágenes hablen por sí mismas.<br><br>
+                        <div class="biografia-firma">Karina Delgado</div>
+                        
                     </div>
                 </div>
             </div>
-        </div>
     </body>
 </html>

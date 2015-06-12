@@ -20,6 +20,7 @@ if(!isset($_SESSION["LOGINFO"])){
 }
 $LOGIN = $_SESSION["LOGINFO"];
 $SITE = $LOGIN->GetInformacionSistema();
+$PERSONALINFO = $LOGIN->GetInformacionPersonal();
 if($SITE->getTitulo()==""){
     $LOGIN->IniciarSesion("guest", "guest");
     $SITE = $LOGIN->GetInformacionSistema();

@@ -55,7 +55,6 @@ jQuery(document).ready(function(){
     my_jPlayer.jPlayer("setMedia", {
 	mp3: "sound/sonido.mp3"
     });
-    my_jPlayer.jPlayer("play");
     my_jPlayer.click(function(){
         my_jPlayer.toggleClass("jp-play");
         my_jPlayer.toggleClass("jp-pause");
@@ -65,8 +64,14 @@ jQuery(document).ready(function(){
             my_jPlayer.jPlayer("play");
         }
     });
+    my_jPlayer.jPlayer("play");
     SetPosObjects();
+    jQuery(".menu-mov").click(function(){
+        var menumovil=jQuery(".menu-movil-container");
+        jQuery(menumovil).toggleClass("menu-mov-oculto");
+        jQuery(menumovil).toggleClass("menu-mov-mostrar");
+    });
     jQuery(document).resize(function(){
         SetPosObjects();
-    })
+    });
 });
