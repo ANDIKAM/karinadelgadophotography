@@ -1,22 +1,48 @@
 <?php
 include_once dirname(__FILE__).'/../basics/basic.php';
-
+$prefix="/karinadelgadophotography";
+function curPageURL() {
+ $pageURL = 'http';
+ if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+ $pageURL .= "://";
+ if ($_SERVER["SERVER_PORT"] != "80") {
+  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+ } else {
+  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+ }
+ return $pageURL;
+}
 class DataBase{
     private $SQLHandle;
     function DataBase()
     {
         $this->SQLHandle= new SQLite3(dirname(__FILE__)."/../data/SQLLiteDB.db");
     }
-    public function ExecQuery($Query){
+    private function ExecQuery($Query,$Type){
         $Resultado = $this->SQLHandle->query($Query);
         if($Resultado===true || $Resultado===false){
             return $Resultado;
         }
-        $ResultadoAray=array();
-        while($Arr=$Resultado->fetchArray(SQLITE3_ASSOC)){
-            $ResultadoAray[]=$Arr;
+        if($Type===2){
+            $ResultadoAray=array();
+            while($Arr=$Resultado->fetchArray(SQLITE3_ASSOC)){
+                $ResultadoAray[]=$Arr;
+            }
+            return $ResultadoAray;
         }
-        return $ResultadoAray;
+        return $Resultado;
+    }
+    public function ExecSelect($Query){
+        return $this->ExecQuery($Query,2);
+    }
+    public function ExecInsert($Query){
+        return $this->ExecQuery($Query,1);
+    }
+    public function ExecUpdate($Query){
+        return $this->ExecQuery($Query,3);
+    }
+    public function ExecDelete($Query){
+        return $this->ExecQuery($Query,4);
     }
 }
 
@@ -34,7 +60,7 @@ class siteinfo extends galeriainfo{
         $this->galeria=array();
         $this->PathToFile=$URLDoc.'/data/siteinfo.xml';
         $this->DataBase= new DataBase();
-        $RESULTADO= $this->DataBase->ExecQuery("SELECT * FROM siteinfo");
+        $RESULTADO= $this->DataBase->ExecSelect("SELECT * FROM siteinfo");
         $this->titulo=$RESULTADO[0]["titulo"];
         $this->URLEmail=$RESULTADO[0]["emailURL"];
         $this->creditos=$RESULTADO[0]["creditos"];
@@ -86,7 +112,7 @@ class siteinfo extends galeriainfo{
                  "creditos='$this->creditos',".
                  "emailURL='$this->emailURL',".
                  "descripcion='$this->descipcion'";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['SYSTEMINFO'] = $this;
         }
@@ -166,16 +192,20 @@ class HTMLUtils{
         return $STR;
     }
     public function toHTMLEntities($STR){
+        //&
+        $STR = str_replace("&", "&amp;", $STR);
+        //.
+        $STR = str_replace(".", "&#46;", $STR);
+        //:
+        $STR = str_replace(":", "&#58;", $STR);
+        //,
+        $STR = str_replace(",", "&#44;", $STR);
         //Letras
         $STR = $this->toHTMLEntities_Letras($STR);
         //<
         $STR = str_replace("<", "&lt;", $STR);
         //>
         $STR = str_replace("<", "&gt;", $STR);
-        //Espacio
-        $STR = str_replace(" ", "&nbsp;", $STR);
-        //&
-        $STR = str_replace("&", "&amp;", $STR);
         //©
         $STR = str_replace("©", "&copy;", $STR);
         //®
@@ -184,27 +214,17 @@ class HTMLUtils{
         $STR = str_replace("'", "&#39;", $STR);
         //"
         $STR = str_replace("\"", "&quot;", $STR);
-        //.
-        $STR = str_replace(".", "&#46;", $STR);
-        //;
-        $STR = str_replace(";", "&#59;", $STR);
-        //:
-        $STR = str_replace(":", "&#58;", $STR);
-        //,
-        $STR = str_replace(",", "&#44;", $STR);
         $STR = $this->LineBreakstoBR($STR);
         return $STR;
     }
     public function fromHTMLEntities($STR){
-        $STR = $this->LineBreakstoBR($STR);
+        $STR = $this->BRtoLineBraks($STR);
         //Letras
         $STR = $this->fromHTMLEntities_Letras($STR);
         //<
         $STR = str_replace("&lt;", "<", $STR);
         //>
         $STR = str_replace("&gt;", "<", $STR);
-        //Espacio
-        $STR = str_replace("&nbsp;", " ", $STR);
         //&
         $STR = str_replace("&amp;", "&", $STR);
         //©
@@ -240,12 +260,12 @@ class loginfo{
         $this->URLFullPath = $_SERVER["DOCUMENT_ROOT"].$prfx;
         $this->URLWebPath = "http://".$_SERVER['HTTP_HOST'].$prfx;
         $this->DataBase = new DataBase();
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM logininfo");
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM logininfo");
         $this->usuario=$RESULTADO[0]["user"];
         $this->password=$RESULTADO[0]["password"];
         $this->nombre=$RESULTADO[0]["nombre"];
         $this->correo=$RESULTADO[0]["email"];
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM slider_principal");
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM slider_principal");
         $ver="";
     }
     public function GetSiteFullInternalUrl(){
@@ -255,6 +275,8 @@ class loginfo{
         return $this->URLWebPath;
     }
     public function CerrarSesion(){
+        $_SESSION['LOGIN_STATUS'] = "INACTIVO";
+        $_SESSION['ADMIN'] = "INACTIVO";
         session_destroy();
     }
     public function verificarSesion(){
@@ -278,19 +300,7 @@ class loginfo{
                         $_SESSION=array();
                 }
             }
-            if (!isset($_SESSION['LOGINFO'])) {
-                $_SESSION['LOGINFO'] = $this;
-            } 
-            //Carga de Informacion del Sistema
-            $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
-            $_SESSION['SYSTEMINFO'] = $systeminfo;
-            //Carga de informacion Personal
-            $personalinfo = new personalinfo($this->URLFullPath,$this->URLWebPath);
-            $_SESSION['PERSONALINFO'] = $personalinfo;
-            
-            $_SESSION['LOGIN_STATUS'] = "ACTIVO";
             $_SESSION['ADMIN'] = "ACTIVO";
-            return true;
         }else{
             if ($usuario=='guest' && $password=='guest'){
                 if(session_status()!=PHP_SESSION_ACTIVE){
@@ -300,34 +310,67 @@ class loginfo{
                         $_SESSION=array();
                     }
                 }
-                if (!isset($_SESSION['LOGINFO'])) {
-                    $_SESSION['LOGINFO'] = $this;
-                } 
-                //Carga de Informacion del Sistema
-                $systeminfo = new siteinfo($this->URLFullPath,$this->URLWebPath);
-                $_SESSION['SYSTEMINFO'] = $systeminfo;
-                //Carga de informacion Personal
-                $personalinfo = new personalinfo($this->URLFullPath,$this->URLWebPath);
-                $_SESSION['PERSONALINFO'] = $personalinfo;
-                $_SESSION['LOGIN_STATUS'] = "ACTIVO";
                 $_SESSION['ADMIN'] = "INACTIVO";
             }else{
-                $this->CerrarSesion();
                 $_SESSION['LOGIN_STATUS'] = "INACTIVO";
                 $_SESSION['ADMIN'] = "INACTIVO";
+                $this->CerrarSesion();
             }
-            return false;
         }
+        $_SESSION['LOGINFO'] = $this; 
+        //Carga de Informacion del Sistema
+        $_SESSION['SYSTEMINFO'] = new siteinfo($this->URLFullPath,$this->URLWebPath);
+        //Carga de informacion Personal
+        $_SESSION['PERSONALINFO'] = new personalinfo($this->URLFullPath,$this->URLWebPath);
+        //Carga de informacion Contacto
+        $_SESSION['CONTACTINFO'] = new contactinfo($this->URLFullPath,$this->URLWebPath);
+        //Carga de informacion Servicios
+        $_SESSION['SERVICIOSINFO'] = new serviciosinfo($this->URLFullPath,$this->URLWebPath);
+        //Carga de informacion Servicios
+        $_SESSION['EMAILCONF'] = new emailconf($this->URLFullPath,$this->URLWebPath);
+        //Carga de informacion Slider principal
+        $_SESSION['GALERIA-0'] = new galeriainfo($this->URLFullPath,$this->URLWebPath,"0");
+        //Carga de informacion Servicios
+        $_SESSION['GALERIA-1'] = new galeriainfo($this->URLFullPath,$this->URLWebPath,"1");
+        $_SESSION['LOGIN_STATUS'] = "ACTIVO";
+        
     }
     public function GetInformacionSistema(){
         if (isset($_SESSION['SYSTEMINFO'])) {
             return $_SESSION['SYSTEMINFO'];
         }
     }
+    public function GetEmailConf(){
+        if (isset($_SESSION['EMAILCONF'])) {
+            return $_SESSION['EMAILCONF'];
+        }
+    }
+    public function GetSliderPrincipal(){
+        if (isset($_SESSION['GALERIA-0'])) {
+            return $_SESSION['GALERIA-0'];
+        }
+    }
+    public function GetGaleria(){
+        if (isset($_SESSION['GALERIA-1'])) {
+            return $_SESSION['GALERIA-1'];
+        }
+    }
     public function GetInformacionPersonal(){
         if (isset($_SESSION['PERSONALINFO'])) {
             return $_SESSION['PERSONALINFO'];
         }
+    }
+    public function GetInformacionServicios(){
+        if (isset($_SESSION['SERVICIOSINFO'])) {
+            return $_SESSION['SERVICIOSINFO'];
+        }
+        return null;
+    }
+    public function GetInformacionContacto(){
+        if (isset($_SESSION['CONTACTINFO'])) {
+            return $_SESSION['CONTACTINFO'];
+        }
+        return null;
     }
     public function getUsuario(){
         return $this->usuario;
@@ -390,7 +433,7 @@ class loginfo{
                  "password='$this->password',".
                  "nombre='$this->nombre',".
                  "email='$this->correo'";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['LOGINFO'] = $this;
         }
@@ -415,7 +458,7 @@ class contactinfo extends HTMLUtils{
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
         $this->DataBase = new DataBase();
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM contactinfo");
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM contactinfo");
         $this->telefono = $RESULTADO[0]["telefono"];
         $this->celular = $RESULTADO[0]["celular"];
         $this->nombre = $RESULTADO[0]["nombre"];
@@ -591,109 +634,22 @@ class contactinfo extends HTMLUtils{
                         "longitud='$this->longitud',".
                         "latitud='$this->latitud',".
                         "descripcion='$this->descripcion'";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['CONTACTINFO'] = $this;
         }
     }
 }
-
-class serviciosinfo extends HTMLUtils{
-    private $resumen;
-    private $mision;
-    private $vision;
-    private $firma;
-    private $PathToFile;
-    private $URLWeb;
-    private $URLDoc;
-    function contactinfo($URLDoc,$URLWeb){
-        $this->URLWeb=$URLWeb;
-        $this->URLDoc=$URLDoc;
-        $this->DataBase = new DataBase();
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM personalinfo");
-        $this->resumen= $RESULTADO[0]["resumen"];
-        $this->mision= $RESULTADO[0]["mision"];
-        $this->vision= $RESULTADO[0]["vision"];
-        $this->firma= $RESULTADO[0]["firma"];
-    }
-    public function getURLDocuments(){
-        return $this->URLDoc;
-    }
-    public function getURLWeb(){
-        return $this->URLWeb;
-    }
-    //GETS
-    public function getResumen(){return $this->fromHTMLEntities($this->resumen);}
-    public function getMision(){return $this->fromHTMLEntities($this->mision);}
-    public function getVision(){return $this->fromHTMLEntities($this->vision);}
-    public function getFirma(){return $this->fromHTMLEntities($this->firma);}
-    public function getFirma_Raw(){return $this->firma;}
-    public function getResumen_Raw(){return $this->resumen;}
-    public function getMision_Raw(){return $this->mision;}
-    public function getVision_Raw(){return $this->vision;}
-    //SETS
-    public function setResumen($var){
-        $var=trim($var);
-        $var=$this->toHTMLEntities($var);
-        if($var!=""){
-            $this->resumen=$var;
-            $this->_Update();
-            return true;
-        }
-        return false;
-    }
-    public function setMision($var){
-        $var=trim($var);
-        $var=$this->toHTMLEntities($var);
-        if($var!=""){
-            $this->mision=$var;
-            $this->_Update();
-            return true;
-        }
-        return false;
-    }
-    public function setVision($var){
-        $var=trim($var);
-        $var=$this->toHTMLEntities($var);
-        if($var!=""){
-            $this->vision=$var;
-            $this->_Update();
-            return true;
-        }
-        return false;
-    }
-    public function setFirma($var){
-        $var=trim($var);
-        $var=$this->toHTMLEntities($var);
-        if($var!=""){
-            $this->firma=$var;
-            $this->_Update();
-            return true;
-        }
-        return false;
-    }
-    private function _Update(){
-        $Query = "UPDATE personalinfo SET resumen='$this->resumen',".
-                 "mision='$this->mision',".
-                 "vision='$this->vision',".
-                 "firma='$this->firma'";
-        $this->DataBase->ExecQuery($Query);
-        if (session_status()==PHP_SESSION_ACTIVE){
-            $_SESSION['PERSONALINFO'] = $this;
-        }
-    }
-}
-
 class serviciosinfo extends HTMLUtils{
     private $servicios;
     private $PathToFile;
     private $URLWeb;
     private $URLDoc;
-    function contactinfo($URLDoc,$URLWeb){
+    function serviciosinfo($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
         $this->DataBase = new DataBase();
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM serviciosinfo");
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM serviciosinfo order by ordenacion");
         $this->servicios= $RESULTADO;
     }
     public function getURLDocuments(){
@@ -717,31 +673,71 @@ class serviciosinfo extends HTMLUtils{
     public function deleteServicio($id){
         $Query = "DELETE from serviciosinfo ".
                  "WHERE id=$id";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['SERVICIOSINFO'] = $this;
         }
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM serviciosinfo order by ordenacion");
+        $this->servicios= $RESULTADO;
+    }
+    public function InsertServicio($descripcion){
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT MAX(id) maximo FROM serviciosinfo");
+        $descripcion=$this->toHTMLEntities($descripcion);
+        $orden=($RESULTADO[0]["maximo"]+1);
+        $Query = "insert into serviciosinfo (descripcion,ordenacion) values ('$descripcion',".$orden.");";
+        $this->DataBase->ExecInsert($Query);     
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM serviciosinfo order by ordenacion");
+        $this->servicios= $RESULTADO;
     }
     private function UpdateServicio($id,$Text){
         $Query = "UPDATE serviciosinfo SET descripcion='$Text' ".
                  "WHERE id=$id";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['SERVICIOSINFO'] = $this;
         }
+        
     }
     //SETS
-
-    public function setServicio($id,$Servicio){
+    public function ordenarServicios($vector){
+        for($i=0;$i<count($vector);$i++){
+            $Query = "UPDATE serviciosinfo SET ordenacion=".($i+1).
+                 " WHERE id=".$vector[$i][0];
+            $this->DataBase->ExecUpdate($Query);
+        }
+    }
+    public function setServicio($id,$Servicio,$noExec=false){
         $this->UpdateServicio($id, $Servicio);
+        if($noExec===true){
+            return;
+        }
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM serviciosinfo order by ordenacion");
+        $this->servicios= $RESULTADO;
     }
     public function setServicios($array){
         for($i=0;$i<count($array);$i++){
-            $this->setServicio($array["id"],$array["descripcion"]);
+            $this->setServicio($array["id"],$array["descripcion"],true);
         }
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM serviciosinfo order by ordenacion");
+        $this->servicios= $RESULTADO;
+    }
+    public function printListaServicios(){
+        $listaServicios="<ul class=\"servicios-lista\">";
+        for($i=0;$i<count($this->servicios);$i++){
+            $listaServicios=$listaServicios."<li>".$this->servicios[$i]["descripcion"]."</li>";
+        }
+        $listaServicios=$listaServicios."</ul>";
+        return $listaServicios;
+    }
+    public function printListaServiciosConID(){
+        $listaServicios="<ul class=\"servicios-lista\">";
+        for($i=0;$i<count($this->servicios);$i++){
+            $listaServicios=$listaServicios."<li id=".$this->servicios[$i]["id"].">".$this->servicios[$i]["descripcion"]."</li>";
+        }
+        $listaServicios=$listaServicios."</ul>";
+        return $listaServicios;
     }
 }
-
 class personalinfo extends HTMLUtils{
     private $resumen;
     private $mision;
@@ -750,11 +746,14 @@ class personalinfo extends HTMLUtils{
     private $PathToFile;
     private $URLWeb;
     private $URLDoc;
-    function contactinfo($URLDoc,$URLWeb){
+    function personalinfo($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
         $this->DataBase = new DataBase();
-        $RESULTADO=$this->DataBase->ExecQuery("SELECT * FROM personalinfo");
+        $this->Load();
+    }
+    private function Load(){
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM personalinfo");
         $this->resumen= $RESULTADO[0]["resumen"];
         $this->mision= $RESULTADO[0]["mision"];
         $this->vision= $RESULTADO[0]["vision"];
@@ -806,6 +805,7 @@ class personalinfo extends HTMLUtils{
         }
         return false;
     }
+    
     public function setFirma($var){
         $var=trim($var);
         $var=$this->toHTMLEntities($var);
@@ -821,170 +821,179 @@ class personalinfo extends HTMLUtils{
                  "mision='$this->mision',".
                  "vision='$this->vision',".
                  "firma='$this->firma'";
-        $this->DataBase->ExecQuery($Query);
+        $this->DataBase->ExecUpdate($Query);
+        $this->Load();
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['PERSONALINFO'] = $this;
         }
     }
 }
-class galeriainfo extends HTMLUtils{
-    private $galeria;
+class emailconf extends HTMLUtils{
+    private $data;
     private $URLWeb;
     private $URLDoc;
-    function galeriainfo($URLDoc,$URLWeb){
+    private $DataBase;
+    function emailconf($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
-        $this->PathToFile = $URLDoc.'/data/galeriainfo.xml';
-        $XML=file_get_contents($this->PathToFile);
-        $XML = new SimpleXMLElement($XML);
-        $this->galeria= array();
-        for($i=0;$i<count($XML->imagen);$i++){
-            $img = new stdClass();
-            $img->id = strval($XML->imagen[$i]->id);
-            $img->order = strval($XML->imagen[$i]->order);
-            $img->url = strval($XML->imagen[$i]->url);
-            $img->alt = strval($XML->imagen[$i]->alt);
-            $img->nombre = strval($XML->imagen[$i]->nombre);
-            $img->ancho = strval($XML->imagen[$i]->ancho);
-            $img->alto = strval($XML->imagen[$i]->alto);
-            $this->galeria[$i]=$img;
+        $this->DataBase = new DataBase();
+        $this->load();
+    }
+    private function load(){
+        $this->data=$this->DataBase->ExecSelect("SELECT * FROM emailconf");
+        if (session_status()==PHP_SESSION_ACTIVE){
+            $_SESSION['EMAILCONF'] = $this;
         }
     }
-    public function getImagen($order){
-        if($order>-1 && $order<=count($this->galeria) && count($this->galeria)!=0){
-            for($i=0;$i<count($this->galeria);$i++){
-                if($this->galeria[$i]->order==$order){
-                    return $this->galeria[$i];
-                }
+    public function getData(){
+        return $this->data;
+    }
+    public function saveData($vect){
+        $Query="UPDATE emailconf SET ".
+               "SMTPAuth='".$vect["SMTPAuth"]."',".
+               "SMTPSecure='".$vect["SMTPSecure"]."',".
+               "HOST='".$vect["HOST"]."',".
+               "Port='".$vect["Port"]."',".
+               "Username='".$vect["Username"]."',".
+               "Pass='".$vect["Pass"]."',".
+               "SetFrom='".$vect["SetFrom"]."',".
+               "SetFromName='".$vect["SetFromName"]."',".
+               "AddReplyTo='".$vect["AddReplyTo"]."'";
+        $this->DataBase->ExecUpdate($Query);
+        $this->load();
+    }
+    
+}
+class galeriainfo extends HTMLUtils{
+    private $galeria;
+    private $tipo;
+    private $URLWeb;
+    private $URLDoc;
+    function galeriainfo($URLDoc,$URLWeb,$tipo="0"){
+        $this->tipo=$tipo;
+        $this->URLWeb=$URLWeb;
+        $this->URLDoc=$URLDoc;
+        $this->DataBase = new DataBase();
+        $this->load();
+    }
+    private function load(){
+        $this->galeria=$this->DataBase->ExecSelect("SELECT * FROM galeria WHERE tipo=$this->tipo order by ordenacion");
+        if (session_status()==PHP_SESSION_ACTIVE){
+            $_SESSION['GALERIA-'.$this->tipo] = $this;
+        }
+    }
+    public function getImagen($id){
+        for($i=0;$i<count($this->galeria);$i++){
+            if($id==$this->galeria[$i][$id]){
+                return $this->galeria[$i];
             }
         }
         return false;
     }
-    public function getImagenEnBlanco(){
-       $img = new stdClass();
-       $maxId=0;
-       $maxOrder=0;
-       for($i=0;$i<count($this->galeria);$i++){
-           if($this->galeria[$i]->id>$maxId){
-               $maxId=$this->galeria[$i]->id;
-           }
-           if($this->galeria[$i]->order>$maxOrder){
-               $maxId=$this->galeria[$i]->order;
-           }
-       }
-       $maxId=$maxId+1;
-       $maxOrder=$maxOrder+1;
-       $img->id = $maxId;
-       $img->order = $maxOrder;
-       $img->url = $this->URLWeb."/galeria/$maxId.jpg";
-       $img->alt = "$maxId.jpg";
-       $img->nombre = "nombre";
-       $img->ancho = "1px";
-       $img->alto = "1px";
-       return $img;
+    public function newImagen($url, $alt, $nombre){
+        $url="galeria/".$url;
+        $PATHTOFILE=dirname(__FILE__).'/../'.$url;
+        $data = getimagesize($PATHTOFILE);
+        $imgancho = $data[0];
+        $imgalto = $data[1];
+        $RESULTADO=$this->DataBase->ExecSelect("SELECT MAX(id) maximo FROM galeria");
+        $orden=($RESULTADO[0]["maximo"]+1);
+        $Query = "insert into galeria (ordenacion,url,alt,nombre,ancho,alto,tipo) values ($orden,'$url','$alt','$nombre','$imgancho','$imgalto',$this->tipo);";
+        $this->DataBase->ExecInsert($Query);     
+        $this->load();
     }
-    public function newImagen($img){
-        if(is_object($img) &&
-           property_exists($img,"id") &&
-           property_exists($img,"order") &&
-           property_exists($img,"url") &&
-           property_exists($img,"alt") &&
-           property_exists($img,"nombre") &&
-           property_exists($img,"ancho") &&
-           property_exists($img,"alto")){
-        array_push($this->galeria, $img);
-            return true;
-        }
-        return false;
-    }
-    public function eliminarImagen($Img){
-        if(is_object($img) &&
-           property_exists($img,"id") &&
-           property_exists($img,"order") &&
-           property_exists($img,"url") &&
-           property_exists($img,"alt") &&
-           property_exists($img,"nombre") &&
-           property_exists($img,"ancho") &&
-           property_exists($img,"alto")){
-            //Elimina la imagen
-            unlink($this->URLDoc.str_replace($this->URLWeb, "", $img->url));
-            //Reordena los Order
-            $eliminar=-1;
-            for($i=0;$i<count($this->galeria);$i++){
-                if($this->galeria[$i]->order>$img->order){
-                    $this->galeria[$i]->order=$this->galeria[$i]->order-1;
-                }
-                if($this->galeria[$i]->id == $img->id){
-                    $eliminar=$i;
-                }
+    public function eliminarImagen($id){
+        $url="";
+        for($i=0;$i<count($this->galeria);$i++){
+            if($this->galeria[$i]["id"]==$id){
+                $url=$this->galeria[$i]["url"];
+                break;
             }
-            //Elimina elemento
-            unset($this->galeria[$eliminar]);
-            return true;
         }
-        return false;
+        if($url==""){
+            return false;
+        }
+        $PATHTOFILE=dirname(__FILE__).'/../'.$url;
+        unlink($PATHTOFILE);
+        $Query = "delete from galeria where id=".$id;
+        $this->DataBase->ExecDelete($Query);     
+        $this->load();
+        return true;
     }
-    public function OrdenarImagenes(){
-        $n=count($this->galeria);
-        for ($i=0; $i<$n-1; $i++)
-        {
-          for ($j=$i+1; $j<$n; $j++)
-          {
-            if($this->galeria[$i]->order>$this->galeria[$j]->order)
-            {
-             $imgAux = $this->galeria[$i];
-             $this->galeria[$i] = $this->galeria[$j];
-             $this->galeria[$j] = $imgAux;
+   public function EditarImagen($alt, $nombre,$id,$name_new){
+        $element=null;
+        for($i=0;$i<count($this->galeria);$i++){
+            if($this->galeria[$i]["id"]==$id){
+                $element=$this->galeria[$i];
             }
-          }
         }
-        $this->_UpdateFile();
+        if(is_null($element)){
+            return null;
+        }
+        $PATHTOFILE=dirname(__FILE__).'/../'.$element["url"];
+        $data = getimagesize($PATHTOFILE);
+        $imgancho = $data[0];
+        $imgalto = $data[1];
+        $name_new ="galeria/".$name_new;
+        $Query = "UPDATE galeria SET alt='$alt',nombre='$nombre',alto='$imgalto',ancho='$imgancho',url='$name_new' where id=".$id;
+        $this->DataBase->ExecUpdate($Query);     
+        $this->load();
+        return str_replace("galeria/", "", $element["url"]);
     }
-    public function editarImagen($img){
-        if(is_object($img) &&
-           property_exists($img,"id") &&
-           property_exists($img,"order") &&
-           property_exists($img,"url") &&
-           property_exists($img,"alt") &&
-           property_exists($img,"nombre") &&
-           property_exists($img,"ancho") &&
-           property_exists($img,"alto")){
-            //Reordena los Order
-            for($i=0;$i<count($this->galeria);$i++){
-                if($this->galeria[$i]->order>$img->order){
-                    $this->galeria[$i]->order=$this->galeria[$i]->order-1;
-                }
-            }
-            return true;
+    public function ordenarImagenes($vector){
+        for($i=0;$i<count($vector);$i++){
+            $Query = "UPDATE galeria SET ordenacion=".($i+1).
+                 " WHERE id=".$vector[$i][0];
+            $this->DataBase->ExecUpdate($Query);
         }
-        return false;
+        $this->load();
+    }
+    public function printListaPlana(){
+        $print = "<ul>";
+        for($i=0;$i<count($this->galeria);$i++){
+            //Item Principal
+            $print = $print."<li>";
+            $orientation=$this->galeria[$i]["ancho"]>=$this->galeria[$i]["alto"]?"L":"P";
+            $print = $print."<div> <img orientation=\"$orientation\" width=\"".$this->galeria[$i]["ancho"]."\" height=\"".$this->galeria[$i]["alto"]."\" src=\"".$this->galeria[$i]["url"]."\"/></div>";
+            $print = $print."</li>";
+        }
+        $print = $print."</ul>";
+        return $print;
+    }
+    
+    public function printListaGaleria($ClassPrefix="",$EditFncName,$DeleteFncName){
+        $print = "<ul class=\"$ClassPrefix-lista-galeria\">";
+        for($i=0;$i<count($this->galeria);$i++){
+            //Item Principal
+            $print = $print."<li item-id=\"".$this->galeria[$i]["id"]."\" order=\"".$this->galeria[$i]["ordenacion"]."\">";
+            //Container de Texto o Imagen
+            $print = $print."<div class=\"texto\"> <img width=\"".$this->galeria[$i]["ancho"]."\" height=\"".$this->galeria[$i]["alto"]."\" src=\"../".$this->galeria[$i]["url"]."\"/></div>";
+            //Container de Botones
+            $print = $print."<div class=\"acciones\">"
+                    . "<a id=\"Editar\" class=\"btn-editar btn btn-primary\" onClick=\"$EditFncName('".$this->galeria[$i]["alt"]."','".$this->galeria[$i]["nombre"]."','".$this->galeria[$i]["id"]."','../".$this->galeria[$i]["url"]."')\" role=\"button\" >Editar</a>"
+                    . "<a id=\"Eliminar\" class=\"btn-eliminar btn btn-danger\" role=\"button\" onClick=\"$DeleteFncName('".$this->galeria[$i]["id"]."','../".$this->galeria[$i]["url"]."')\">Eliminar</a>"
+                    . "</div>";
+            $print = $print."</li>";
+        }
+        $print = $print."</ul>";
+        return $print;
+    }
+    
+    public function printImagenesPreCache(){
+        $print = "";
+        for($i=0;$i<count($this->galeria);$i++){
+            $print = $print."<img src=\"".$this->galeria[$i]["url"]."\"/>";
+        }
+        return $print;
+    }
+    public function JSONEncode(){
+        return json_encode($this->galeria);
     }
     public function getURLDocuments(){
         return $this->URLDoc;
     }
     public function getURLWeb(){
         return $this->URLWeb;
-    }
-    private function _UpdateFile(){
-        $xml="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
-             "<root>\n";
-        for($i=0;$i<count($this->galeria);$i++){
-            $xml=$xml."    <imagen>\n".
-                 "        <id>".$this->galeria[$i]->id."</id>\n".
-                 "        <order>".$this->galeria[$i]->order."</order>\n".
-                 "        <url>".$this->galeria[$i]->url."</url>\n".
-                 "        <alt>".$this->galeria[$i]->alt."</alt>\n".
-                 "        <nombre>".$this->galeria[$i]->nombre."</nombre>\n".
-                 "        <ancho>".$this->galeria[$i]->ancho."</ancho>\n".
-                 "        <alto>".$this->galeria[$i]->alto."</alto>\n".
-                 "    </imagen>\n";
-        }
-        $xml=$xml."</root>";
-        $XMLSave = simplexml_load_string($xml);
-        $XMLSave->asXml($this->PathToFile);
-        if (session_status()==PHP_SESSION_ACTIVE){
-            $_SESSION['GAELERIAINFO'] = $this;
-        }
     }
 }
 

@@ -55,6 +55,7 @@
             $SLIDERINFO->eliminarImagen($_REQUEST["del-photo-id"]);
         }
     }
+    $EMAILCONF_TEMP = $EMAILCONF->getData();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -315,38 +316,93 @@
                 </div>
             </div>
             <div class="box-content row">
-                <div class="col-lg-7 col-md-12">
-                    <h2>Edición de parámetros generales del Sitio<br>
-                        <small>A continuación edite los siguientes campos para configurar el HOME de su sitio WEB.</small>
-                    </h2>
-                </div>
-                <div class="col-lg-12 col-md-12">
-                    <form class="form-horizontal">
-                    <div class="form-group">
-                      <label for="titulo" class="col-sm-2 control-label">Título</label>
-                      <div class="col-sm-8">
-                        <input type="email" class="form-control" id="titulo" value="<?php echo $SITE->getTitulo(); ?>" placeholder="Título del sitio">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-2 control-label">Descripción</label>
-                      <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" placeholder="Descripción del sitio"><?php echo $SITE->getDescripcion(); ?></textarea>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Actualizar Parámetros</button>
-                      </div>
-                    </div>
-                  </form>
-                  <h2 style="margin-top:20px;">Edici&oacute;n de slider principal<br>
-                        <small>Ac&aacute; puede agregar, eliminar o editar fotograf&iacute;s para el Slider principal.</small>
+                <div class="col-lg-8 col-md-8">
+                  <h2 style="margin-top:20px;">Edici&oacute;n de datos de contacto:<br>
+                        <small>En esa secci&oacute;n podr&aacute; configurar los datos de contacto y servidor de emails.</small>
                   </h2>
-                  <a class="btn btn-default" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
-                    <?php
-                            echo $SLIDERINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
-                    ?>
+                   <h3 style="margin-top:20px;">Datos de contacto<br>
+                   </h3>
+                   <form id="contact-data" style="margin-left:40px;">
+                       <input type="hidden" name="texto" value="---"/>
+                       <input type="hidden" name="estado" value="---"/>
+                       <input type="hidden" name="ciudad" value="---"/>
+                       <input type="hidden" name="longitud" value="---"/>
+                       <input type="hidden" name="latitud" value="---"/>
+                        <div class="form-group" >
+                          <label for="nombre">Nombre:</label>
+                          <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
+                        </div>
+                       <div class="form-group">
+                          <label for="descripcion">Descripci&oacute;n:</label>
+                          <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese descripción o profesión">
+                        </div>
+                       <div class="form-group">
+                          <label for="pais">Pa&iacute;s:</label>
+                          <input type="text" class="form-control" name="pais" id="pais" placeholder="Ingrese un país">
+                       </div>
+                       <div class="form-group">
+                          <label for="direccion">Direcci&oacute;n:</label>
+                          <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese una dirección">
+                       </div>
+                       <div class="form-group">
+                          <label for="celular">Celular:</label>
+                          <input type="text" class="form-control" name="pais" id="pais" placeholder="Ingrese un celular">
+                       </div>
+                       <div class="form-group">
+                           <label for=telefono">Tel&eacute;fono:</label>
+                          <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Ingrese un teléfono fijo">
+                       </div>
+                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="AgregarFotografia()" role="button">Actualizar</a></div>
+                   </form>
+                   <h3 style="margin-top:20px;">Datos de servidor de correos<br>
+                   </h3>
+                   <form id="contact-data" style="margin-left:40px;width:40%">
+                        <div class="form-group" >
+                          <label for="SMTPAuth">SMTPAuth:</label>
+                          <select class="form-control" name="SMTPAuth" id="SMTPAuth">
+                            <option <?php echo $EMAILCONF_TEMP["SMTPAuth"]=="true"?"selected=true":""; ?> value="true">Si</option>
+                            <option <?php echo $EMAILCONF_TEMP["SMTPAuth"]=="false"?"selected=true":"";?> value="false">No</option>
+                          </select>
+                        </div>
+                        <div class="form-group" >
+                          <label for="nombre">SMTPSecure:</label>
+                          <select class="form-control">
+                            <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="ssl"?"selected=true":"";?>  value="ssl">SSL</option>
+                            <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="tls"?"selected=true":"";?> value="tls">TLS</option>
+                            <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="none"?"selected=true":"";?> value="none">Ninguno</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="HOST">HOST - Servidor:</label>
+                          <input type="text" class="form-control" name="HOST" id="HOST" placeholder="IP o Dominio servidor SMTP">
+                        </div>
+                        <div class="form-group">
+                          <label for="Port">Puerto:</label>
+                          <input type="text" class="form-control" name="Port" id="Port" placeholder="Puerto de conexión con servidor SMTP">
+                        </div>
+                       <div class="form-group">
+                          <label for="Username">Nombre de usuario:</label>
+                          <input type="text" class="form-control" name="Username" id="Username" placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                          <label for="Pass">Password:</label>
+                          <input type="text" class="form-control" name="Pass" id="Pass" placeholder="Contraseña">
+                        </div>
+                        <div class="form-group">
+                          <label for="SetFrom">Enviado por:</label>
+                          <input type="text" class="form-control" name="SetFrom" id="SetFrom" placeholder="Enviado por (alias)">
+                        </div>
+                        <div class="form-group">
+                          <label for="SetFromName">Nombre de remitente:</label>
+                          <input type="text" class="form-control" name="SetFromName" id="SetFromName" placeholder="Nombre de remitente">
+                        </div>
+                        <div class="form-group">
+                          <label for="AddReplyTo">Responder a:</label>
+                          <input type="text" class="form-control" name="AddReplyTo" id="AddReplyTo" placeholder="Dirección de email de respuesta">
+                        </div>
+                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="AgregarFotografia()" role="button">Actualizar</a></div>
+                   </form>
+                  
                 </div>
             </div>
         </div>

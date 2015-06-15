@@ -63,11 +63,11 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-5"></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="servicios.php">Servicios</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="contacto.php">Contacto</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="first" href="index.php">Inicio</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="servicios.php">Servicios</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="contacto.php">Contacto</a></div>
                                 </div>
                             </div>
                         </div>

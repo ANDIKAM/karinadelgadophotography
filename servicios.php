@@ -48,11 +48,11 @@ include_once dirname(__FILE__).'/basics/login.php';
             
         </div>
         <div class="menu-movil-container menu-mov-oculto hidden-lg hidden-md">
-                <div class="menu-item-mov"><a href="index.php">Inicio</a></div>
-                <div class="menu-item-mov"><a href="galeria.php">Galer&iacute;a</a></div>
-                <div class="menu-item-mov"><a href="biografia.php">Biograf&iacute;a</a></div>
-                <div class="menu-item-mov"><a href="servicios.php">Servicios</a></div>
-                <div class="menu-item-mov"><a href="contacto.php">Contacto</a></div>
+                <div class="menu-item-mov"><a  class="first" href="index.php">Inicio</a></div>
+                <div class="menu-item-mov"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                <div class="menu-item-mov"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                <div class="menu-item-mov"><a  class="menu"href="servicios.php">Servicios</a></div>
+                <div class="menu-item-mov"><a  class="menu"href="contacto.php">Contacto</a></div>
         </div>
         <div class="navbar-dsk hidden-sm hidden-xs">
             <div class="container informacion">
@@ -62,11 +62,11 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-5"></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="servicios.php">Servicios</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="contacto.php">Contacto</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="first" href="index.php">Inicio</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="servicios.php">Servicios</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="contacto.php">Contacto</a></div>
                                 </div>
                             </div>
                         </div>
@@ -74,33 +74,16 @@ include_once dirname(__FILE__).'/basics/login.php';
             </div>
         </div>
         <div class="container">
-                <div class="row">
-                    <div class="titulo-pagina">
-                            >> Servicios
-                    </div>
-                    <div class="contenido">
-                        <ul class="servicios-lista">
-                            <li>
-                                Somos una empresa con años de experiencia en fotografía y video profesional combinada con un entusiasmo excepcional, nuestro estilo visual único y contemporáneo junto con los mejores equipos nos permite ofrecerle un estilo natural y creativo.
-                            </li>
-                            <li>
-                                Nos caracteriza una profunda dedicación en cuanto a tiempo y producción de cada sesión fotográfica, por lo cual tomamos un número limitado de clientes para poder brindarle una experiencia verdaderamente personalizada, reserva con tiempo!
-                            </li>
-                            <li>
-                                Contamos con vestuario adecuado para maternidad y el mejor asesoramiento de imagen para eventos: niños, familiares, quinceañeras, pre-bodas, bodas, post-bodas o cualquier tipo de fotografía que necesite. 
-                            </li>
-                            <li>
-                                Tenemos disponible varios paquetes de sesión fotográfica, contáctenos directamente para aclarar sus inquietudes a través de las redes sociales o de la página contacto.
-                            </li>
-                            <li>
-                                El trabajo se entrega solo en digital, las fotos son retocadas y personalizadas.
-                            </li>
-                            <li>
-                                Visítanos en nuestras oficinas para conocer nuestro material de impresiones, álbumes y mosaicos.
-                            </li>
-                        </ul>                        
-                    </div>
+            <div class="row">
+                <div class="titulo-pagina">
+                        >> Servicios
+                </div>
+                <div class="contenido">
+                    <?php
+                        echo $SERVICIOSINFO->printListaServicios();
+                    ?>
                 </div>
             </div>
+        </div>
     </body>
 </html>

@@ -7,29 +7,24 @@ include_once dirname(__FILE__).'/basics/login.php';
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title><?php echo $SITE->getTitulo();?></title>
+        <link rel="stylesheet" type="text/css" href="css/3d-falling-leaves.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/customcss.css">
-        <link rel="stylesheet" type="text/css" href="css/3d-falling-leaves.css">
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/3d-falling-leaves.js"></script>
         <script src="js/rotate3Di.min.js"></script>
         <script type="text/javascript" src="js/jquery.jplayer.js"></script>
+        <script>
+            var Galeria=<?php echo $SLIDERINFO->JSONEncode(); ?>;
+        </script>
         <script src="js/global.js"></script>
         <script src="js/index.js"></script>
     </head>
     <body>
         <div class="hidden">
-            <?php echo "caching images... Descargar todas las Imagenes"; ?>
             <img src="img/spiner.gif" />
-            <img src="galeria/01.jpg" />
-            <img src="galeria/02.jpg" />
-            <img src="galeria/03.jpg" />
-            <img src="galeria/04.jpg" />
-            <img src="galeria/05.jpg" />
-            <img src="galeria/06.jpg" />
-            <img src="galeria/07.jpg" />
-            <img src="galeria/08.jpg" />
-            <img src="galeria/09.jpg" />
+            <?php echo $SLIDERINFO->printImagenesPreCache(); ?>
+            
         </div>
         <div class="leaves-right"></div>
         <div class="leaves-left"></div>
@@ -69,11 +64,11 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-5"></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="servicios.php">Servicios</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="contacto.php">Contacto</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="first" href="index.php">Inicio</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="servicios.php">Servicios</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="contacto.php">Contacto</a></div>
                                 </div>
                             </div>
                         </div>

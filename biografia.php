@@ -62,11 +62,11 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-5"></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="servicios.php">Servicios</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="contacto.php">Contacto</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="first" href="index.php">Inicio</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="servicios.php">Servicios</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="contacto.php">Contacto</a></div>
                                 </div>
                             </div>
                         </div>
@@ -80,12 +80,8 @@ include_once dirname(__FILE__).'/basics/login.php';
                     </div>
                     <div class="contenido">
                         <img class="img-thumbnail foto-biografia" height="331px" width="500px" src="img/biografia.jpg"/>
-                        Muchas gracias por tu visita!<br><br>
-                        Te mereces algo especial para preservar y revivir tus recuerdos, mi trabajo es lograr esa fotografía que capture la esencia de intensa emoción del momento, dirijo una empresa dedicada a la captura de la vida.<br><br>
-                        Nos esforzamos por hacer que cada sesión de fotografía sea emocionante y única, prestamos especial atención a los detalles y a los gustos de cada persona, de esta forma aseguramos que tu personalidad única sea capturada en la película.<br><br>
-                        Estoy aquí para ti a través de las etapas de planificación, miro el mundo con sentido del humor y alegría, me encantan los accesorios divertidos, sombreros lindos, ropa sencilla pero original, soy una luz natural...<br><br>
-                        Espero te guste mi trabajo y que las imágenes hablen por sí mismas.<br><br>
-                        <div class="biografia-firma">Karina Delgado</div>
+                        <?php echo $PERSONALINFO->getResumen_Raw(); ?>
+                        <div class="biografia-firma"><?php echo $PERSONALINFO->getFirma(); ?></div>
                         
                     </div>
                 </div>

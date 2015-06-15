@@ -17,10 +17,21 @@ if(!isset($_SESSION["LOGINFO"])){
     $LOGIN = new loginfo();
     $LOGIN->IniciarSesion("guest", "guest");
    
+}else{
+    //REFRESH SESSION
+    $temp=$_SESSION["ADMIN"];
+    $LOGIN = new loginfo();
+    $LOGIN->IniciarSesion("guest", "guest");
+    $_SESSION["ADMIN"]=$temp;
 }
 $LOGIN = $_SESSION["LOGINFO"];
 $SITE = $LOGIN->GetInformacionSistema();
 $PERSONALINFO = $LOGIN->GetInformacionPersonal();
+$CONTACTINFO = $LOGIN->GetInformacionContacto();
+$SERVICIOSINFO = $LOGIN->GetInformacionServicios();
+$SLIDERINFO = $LOGIN->GetSliderPrincipal();
+$GALERIAINFO = $LOGIN->GetGaleria();
+$EMAILCONF = $LOGIN->GetEmailConf();
 if($SITE->getTitulo()==""){
     $LOGIN->IniciarSesion("guest", "guest");
     $SITE = $LOGIN->GetInformacionSistema();

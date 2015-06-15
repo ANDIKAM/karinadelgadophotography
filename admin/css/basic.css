@@ -1,0 +1,148 @@
+.sortable-dragging{
+    border-style: dotted;
+    border-width: 1px;
+    opacity: 1;
+    
+    
+}
+#file-name-selected{
+    padding-left:10px;
+}
+.sliderprincipal-lista-galeria{
+    padding-left:0;
+    list-style:none;
+}
+#slider-info-form-edit img, #slider-info-form-delete img, #galeria-info-form-delete img{
+    width: 180px;
+    height: auto;
+    border-radius: 5px;
+    margin:10px 0px 10px 0px;
+    border-style: solid;
+    border-color: white;
+    border-width: 3px;
+    box-shadow: 0px 0px 7px #888888;
+}
+#slider-info-form-edit .img-container, #slider-info-form-delete .img-container{
+    width:100%;
+    text-align:center;
+}
+#slider-info-form-edit .img-container, #slider-info-form-delete .img-container,#galeria-info-form-delete .img-container{
+    width:100%;
+    text-align:center;
+}
+.sliderprincipal-lista-galeria li{
+    margin:10px;
+    display:block;
+    width: 230px;
+    padding:10px;
+    border-radius:5px;
+    background-color: rgba(0,0,0,.05);
+    float:left;
+}
+.sliderprincipal-lista-galeria li:hover{
+    background-color: rgba(0,0,0,.1);
+}
+.sliderprincipal-lista-galeria li img{
+    width: 180px;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    border-style: solid;
+    border-color: white;
+    border-width: 3px;
+    margin-left:auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 7px #888888;
+}
+.sliderprincipal-lista-galeria li .acciones{
+    width:100%;
+    text-align: center;
+    margin-top:10px;
+}
+.sliderprincipal-lista-galeria li .acciones .btn{
+    width:80px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.sliderprincipal-lista-galeria li .texto{
+    width:100%;
+    text-align: center;
+}
+
+.sliderprincipal-lista-galeria{
+    padding-left:0;
+    list-style:none;
+}
+
+
+#personal-info-form{
+    margin-left:20px;
+}
+.personal-buttons{
+    width: 100%;
+    text-align: right;
+}
+#fotografia{
+    padding: 5px;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+.personal-thumbnail{
+    width: 350px;
+    height: auto;
+    border-radius: 15px;
+    margin-top: 10px;
+    border-style: solid;
+    border-color: white;
+    border-width: 5px;
+    box-shadow: 0px 0px 7px #888888;
+}
+textarea {
+    resize: none !important;
+}
+.servicio-item{
+    display:block;
+    width: 100%;
+    float:left;
+    margin:10px 10px 0px 10px;
+    border-radius: 5px;
+    cursor:move;
+    padding: 10px 10px 10px 20px;
+    background-color:rgba(0,0,0,.05);
+}
+.servicio-item:hover{
+    background-color:rgba(0,0,0,.1);
+}
+.servicio-item .texto{
+    width: 70%;
+    float:left;
+}
+.servicio-item .acciones{
+    width: 30%;
+    float:left;
+    text-align: right;
+}
+.servicios-editar{
+    list-style: none;
+    display:block;
+    padding-left: 0;
+    width: 100%;
+    margin-top:20px;
+}

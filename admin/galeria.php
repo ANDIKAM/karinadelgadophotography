@@ -5,7 +5,7 @@
     }
     if(isset($_REQUEST["exec-action"])){ //Verifica si hay acciones pendientes
     //Index
-        if($_REQUEST["exec-action"]==="index-slider-newphoto"){ //Elimina un servicio
+        if($_REQUEST["exec-action"]==="galeria-slider-newphoto"){ //Elimina un servicio
             $name= time().".jpg"; //Nombre autogenerado de la fotografia
             if(isset($_FILES) && count($_FILES)> 0)
             {  
@@ -19,15 +19,15 @@
                                 unlink($dir.$name);
                             }
                             move_uploaded_file($fl['tmp_name'],$dir.$name);
-                            $SLIDERINFO->newImagen($name, $_REQUEST["index-slider-alt"], $_REQUEST["index-slider-nombre"]);
+                            $GALERIAINFO->newImagen($name, $_REQUEST["galeria-slider-alt"], $_REQUEST["galeria-slider-nombre"]);
                         }
                     }
                 }
             }
         }
-        if($_REQUEST["exec-action"]==="index-slider-editphoto"){ //Elimina un servicio
+        if($_REQUEST["exec-action"]==="galeria-slider-editphoto"){ //Elimina un servicio
             $name_new=time().".jpg"; //Nombre autogenerado de la fotografia
-            $name=$SLIDERINFO->EditarImagen($_REQUEST["index-slider-alt"], $_REQUEST["index-slider-nombre"],$_REQUEST["edit-photo-id"],$name_new);
+            $name=$GALERIAINFO->EditarImagen($_REQUEST["galeria-slider-alt"], $_REQUEST["galeria-slider-nombre"],$_REQUEST["edit-photo-id"],$name_new);
             
             if(!is_null($name)){
                 if(isset($_FILES) && count($_FILES)> 0)
@@ -51,8 +51,8 @@
                 }
             }
         }
-        if($_REQUEST["exec-action"]==="index-slider-deletephoto"){ //Elimina un servicio
-            $SLIDERINFO->eliminarImagen($_REQUEST["del-photo-id"]);
+        if($_REQUEST["exec-action"]==="galeria-slider-deletephoto"){ //Elimina un servicio
+            $GALERIAINFO->eliminarImagen($_REQUEST["del-photo-id"]);
         }
     }
 ?>
@@ -71,6 +71,7 @@
     <link href="css/charisma-app.css" rel="stylesheet">
     <link href='css/animate.min.css' rel='stylesheet'>
     <link href='css/basic.css' rel='stylesheet'>
+
     <!-- jQuery -->
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="js/andikam.modal.js"></script>
@@ -88,17 +89,17 @@
             var fullFileName=$(elemento).val();
             var FileName=fullFileName.substr(fullFileName.lastIndexOf("\\")+1, fullFileName.length);
             $("#"+container+" #file-name-selected").text("Archivo seleccionado: "+FileName);
-            if($("#"+container+" #index-slider-nombre").val()==""){
-                $("#"+container+" #index-slider-nombre").val(FileName);
+            if($("#"+container+" #galeria-slider-nombre").val()==""){
+                $("#"+container+" #galeria-slider-nombre").val(FileName);
             }
-            if($("#"+container+" #index-slider-alt").val()==""){
-                $("#"+container+" #index-slider-alt").val(FileName);
+            if($("#"+container+" #galeria-slider-alt").val()==""){
+                $("#"+container+" #galeria-slider-alt").val(FileName);
             }
         }
         function AgregarFotografia(){
             $("<form id=\"slider-info-form\" enctype=\"multipart/form-data\" name=\"slider-info-form\" method=\"post\" action=\"#SELF\">"+
               "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-newphoto\"/>"+
+                "<input type=\"hidden\" name=\"exec-action\" value=\"galeria-slider-newphoto\"/>"+
                 "<label for=\"fotografia\">Agregar Imagen:</label><br>"+
                 "<span class=\"btn btn-default btn-file\">"+
                 "Seleccionar archivo <input type=\"file\" name=\"fotografia\" onchange=\"changeFile(this,'slider-info-form')\" id=\"slider-fotografia\">"+
@@ -107,12 +108,12 @@
                 "<p class=\"help-block\">Si desea agregue la fotografia, s&oacute;lo JPG o JPEG(Máximo 500kb, archivos de mayor tama&ntilde;o no ser&aacute;n cargados).</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-nombre\" name=\"index-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
+                      "<label for=\"galeria-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
+                      "<input type=\"text\" class=\"form-control\" id=\"galeria-slider-nombre\" name=\"galeria-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-alt\" name=\"index-slider-alt\" placeholder=\"Ingrese el texto alterno\"/>"+
+                      "<label for=\"galeria-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
+                      "<input type=\"text\" class=\"form-control\" id=\"galeria-slider-alt\" name=\"galeria-slider-alt\" placeholder=\"Ingrese el texto alterno\"/>"+
                 "</div>"+
                 "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"524288\" />"+
               "</form>").AndikamModalDialog({alto:'400',
@@ -130,7 +131,7 @@
         function EditarFotografia(alt,nombre,id,url){
             $("<form id=\"slider-info-form-edit\" enctype=\"multipart/form-data\" name=\"slider-info-form-edit\" method=\"post\" action=\"#SELF\">"+
               "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-editphoto\"/>"+
+                "<input type=\"hidden\" name=\"exec-action\" value=\"galeria-slider-editphoto\"/>"+
                 "<input type=\"hidden\" name=\"edit-photo-id\" value=\""+id+"\"/>"+
                 "<label for=\"fotografia\">Editar Imagen:</label><br>"+
                 "<span class=\"btn btn-default btn-file\">"+
@@ -141,12 +142,12 @@
                 "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
-                      "<input type=\"text\" class=\"form-control\"  value=\""+nombre+"\" id=\"index-slider-nombre\" name=\"index-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
+                      "<label for=\"galeria-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
+                      "<input type=\"text\" class=\"form-control\"  value=\""+nombre+"\" id=\"galeria-slider-nombre\" name=\"galeria-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-alt\" name=\"index-slider-alt\"  value=\""+alt+"\" placeholder=\"Ingrese el texto alterno\"/>"+
+                      "<label for=\"galeria-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
+                      "<input type=\"text\" class=\"form-control\" id=\"galeria-slider-alt\" name=\"galeria-slider-alt\"  value=\""+alt+"\" placeholder=\"Ingrese el texto alterno\"/>"+
                 "</div>"+
                 "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"524288\" />"+
               "</form>").AndikamModalDialog({alto:'550',
@@ -162,9 +163,9 @@
                                              buttons:{ok:true}});
         }
         function EliminarFotografia(id,url){
-            $("<form id=\"slider-info-form-delete\" enctype=\"multipart/form-data\" name=\"slider-info-form-delete\" method=\"post\" action=\"#SELF\">"+
+            $("<form id=\"galeria-info-form-delete\" enctype=\"multipart/form-data\" name=\"slider-info-form-delete\" method=\"post\" action=\"#SELF\">"+
               "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-deletephoto\"/>"+
+                "<input type=\"hidden\" name=\"exec-action\" value=\"galeria-slider-deletephoto\"/>"+
                 "<input type=\"hidden\" name=\"del-photo-id\" value=\""+id+"\"/>"+
                 "<label>¿Est&aacute; seguro de eliminar la fotograf&iacute;a?</label><br>"+
                 "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
@@ -173,7 +174,7 @@
                                              ancho:'400',
                                              titulo:"Eliminar fotograf&iacute;a",
                                              ok:function(){
-                                                    $("#slider-info-form-delete").submit();
+                                                    $("#galeria-info-form-delete").submit();
                                                  },
                                              buttons:{ok:true}});
         }
@@ -277,29 +278,6 @@
         </li>
     </ul>
 </div>
-<!-- Introducción -->
-<div class="row">
-    <div class="box col-md-12">
-        <div class="box-inner">
-            <div class="box-header well">
-                <h2><i class="glyphicon glyphicon-info-sign"></i>Introduccion</h2>
-            </div>
-            <div class="box-content row">
-                <div class="col-lg-7 col-md-12">
-                    <h2>Página principal "Home"<br>
-                        <small>Sitio premium ofrecido por ANDIKAM SAS, Potenciado por HTML5, JavaScript y SQLite</small>
-                    </h2>
-                </div>
-                <div class="col-lg-12 col-md-12">
-                    <p>
-                        Puede utilizar esta página para editar todo lo que desea que aparezca en su sitio web referente a las características generales del mismo, desde el título, la descripción y las imágenes del SLIDER principal.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Ediciones Generales -->
 <div class="row">
     <div class="box col-md-12">
@@ -315,37 +293,13 @@
                 </div>
             </div>
             <div class="box-content row">
-                <div class="col-lg-7 col-md-12">
-                    <h2>Edición de parámetros generales del Sitio<br>
-                        <small>A continuación edite los siguientes campos para configurar el HOME de su sitio WEB.</small>
-                    </h2>
-                </div>
                 <div class="col-lg-12 col-md-12">
-                    <form class="form-horizontal">
-                    <div class="form-group">
-                      <label for="titulo" class="col-sm-2 control-label">Título</label>
-                      <div class="col-sm-8">
-                        <input type="email" class="form-control" id="titulo" value="<?php echo $SITE->getTitulo(); ?>" placeholder="Título del sitio">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-2 control-label">Descripción</label>
-                      <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" placeholder="Descripción del sitio"><?php echo $SITE->getDescripcion(); ?></textarea>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Actualizar Parámetros</button>
-                      </div>
-                    </div>
-                  </form>
-                  <h2 style="margin-top:20px;">Edici&oacute;n de slider principal<br>
-                        <small>Ac&aacute; puede agregar, eliminar o editar fotograf&iacute;s para el Slider principal.</small>
+                  <h2>Edición de Galeria principal del Sitio<br>
+                        <small>Edite, agregue u ordene las fotograf&iacute;as de la galeria principal</small>
                   </h2>
                   <a class="btn btn-default" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
                     <?php
-                            echo $SLIDERINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
+                            echo $GALERIAINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
                     ?>
                 </div>
             </div>

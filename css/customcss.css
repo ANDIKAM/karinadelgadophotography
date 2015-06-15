@@ -29,12 +29,39 @@
   font-style: normal;
 }
 
-a{
+
+@font-face {
+  font-family: 'Selfish';
+  src: url('../fonts/Selfish.eot?#iefix') format('embedded-opentype'),  url('../fonts/Selfish.woff') format('woff'), url('../fonts/Selfish.ttf')  format('truetype'), url('../fonts/Selfish.svg#Selfish') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'MfReallyAwesome';
+  src: url('../fonts/MfReallyAwesome.eot?#iefix') format('embedded-opentype'),  url('../fonts/MfReallyAwesome.woff') format('woff'), url('../fonts/MfReallyAwesome.ttf')  format('truetype'), url('../fonts/MfReallyAwesome.svg#MfReallyAwesome') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+a.menu{
     color: #54541F !important;
     text-decoration: none !important;
 }
-a:hover{
+a.menu:hover{
     color: #54541F !important;
+    text-decoration: none !important;
+}
+a.first{
+    color: #E95E49  !important;
+    text-decoration: none !important;
+    font-weight: bold;
+}
+a.first:hover{
+    color: #E95E49 !important;
+    font-weight: bold;
     text-decoration: none !important;
 }
 img.center-img{
@@ -66,9 +93,9 @@ img.center-img:before{
         top:0;
         width: 100%;
         height: 100%;
-        background-image: url(../img/background.jpg);
         transition: background .5s linear;
         background-repeat: no-repeat;
+        background-image: url(../img/background.jpg);
         background-size: 100% auto !important;
         background-attachment: fixed;
         background-position: center; 
@@ -94,7 +121,6 @@ img.center-img:before{
         right: 0;
         bottom: 0;
         z-index:-5000;
-        background-image: url(../galeria/01.jpg); 
         -webkit-mask-image: url(../img/mask7751-lr-01.png);
         -webkit-mask-position: center;
         -webkit-mask-size: auto 100% !important;
@@ -141,7 +167,6 @@ img.center-img:before{
         right: 0;
         bottom: 0;
         z-index:-5000;
-        background-image: url(../galeria/01.jpg); 
         -webkit-mask-image: url(../img/mask7751-lr-01.png);
         -webkit-mask-position: center;
         -webkit-mask-size: 100% auto !important;
@@ -253,7 +278,7 @@ img.center-img:before{
         
         right: 0;
         top:-12px;
-        z-index: 9000;
+        z-index: 1000;
     }
     .navbar-dsk{
         //background: rgba(0, 0, 0, .5);
@@ -281,9 +306,8 @@ img.center-img:before{
         text-shadow:rgba(0,0,0,.1) -1px -1px 1px,rgba(255,255,255,.5) 1px 1px 1px;
         text-align: center;
     }
-    .menu-item-dsk:first-of-type{
-        color:#E85E48;
-        text-shadow:rgba(0,0,0,.1) -1px -1px 1px,rgba(255,255,255,.5) 1px 1px 1px;
+    .menu-item-dsk:first a{
+        color:rgb(233,94,73) !important;
     }
     .menu-item-dsk:after{
         content: "";
@@ -615,7 +639,7 @@ img.center-img:before{
         
         right: 0;
         top:-12px;
-        z-index: 9000;
+        z-index: 1000;
     }
     .navbar-dsk{
         //background: rgba(0, 0, 0, .5);
@@ -644,8 +668,8 @@ img.center-img:before{
         text-align: center;
         top:50px;
     }
-    .menu-item-dsk:first-of-type{
-        color:#E85E48;
+    .menu-item-dsk:first a{
+        color:rgb(233,94,73) !important;
         text-shadow:rgba(0,0,0,.1) -1px -1px 1px,rgba(255,255,255,.5) 1px 1px 1px;
     }
     .menu-item-dsk:after{
@@ -675,7 +699,7 @@ img.center-img:before{
         
     }
     .contenido{
-        font-family: 'HelveticaNeue-Light';
+        font-family: 'MfReallyAwesome';
         font-size: 14pt;
         border-style: dotted;
         border-color: rgb(203,194,177);
@@ -697,7 +721,7 @@ img.center-img:before{
         font-size: 14pt;
     }
     .contenido-contacto{
-        font-family: 'HelveticaNeue-Light';
+        font-family: 'MfReallyAwesome';
         font-size: 14pt;
         width: 80%;
         margin-left: auto;
@@ -712,10 +736,11 @@ img.center-img:before{
         -moz-osx-font-smoothing: grayscale;
     }
     .biografia-firma{
-        font-family:'JandaRomantic';
+        font-family: 'Selfish';
+        font-size: 27pt;
         width: 100%;
-        text-align: center;
-        font-weight:600;
+        text-align: right;
+        margin-top:30px;
     }
     .rs-facebook{
         width: 40px;
@@ -733,6 +758,7 @@ img.center-img:before{
         opacity: .5;
         cursor: pointer;
     }
+
     .rs-instagram{
         width: 40px;
         height: 40px;
@@ -915,5 +941,169 @@ img.center-img:before{
         border-style: dotted;
         border-width: 1px;
         border-radius: 3px;
+    }
+    div.galeria-principal{
+        width:80%;
+        overflow: hidden;
+        height: 350px;
+        top:0;
+        margin-left: auto;
+        margin-right: auto;
+        clear: both;
+        position:relative;
+    }
+    .left-arrow{
+        color:rgb(203,194,177);
+        position: absolute;
+        font-size: 40px!important;
+        width: 40px;
+        height: 40px;
+        display:block;
+        top: 0;
+        bottom:0;
+        left: 10px;
+        margin:auto;
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -ms-transition: all .2s linear;
+        -o-transition: all .2s linear;
+        transition: all .2s linear;
+        z-index:1000;
+    }
+    .right-arrow{
+        color:rgb(203,194,177);
+        position: absolute;
+        font-size: 40px!important;
+        width: 40px;
+        height: 40px;
+        top: 0;
+        bottom:0;
+        right: 10px;
+        display:block;
+        margin:auto;
+        -webkit-transition: all .1s linear;
+        -moz-transition: all .1s linear;
+        -ms-transition: all .1s linear;
+        -o-transition: all .1s linear;
+        transition: all .1s linear;
+        z-index:1000;
+    }
+    .right-arrow:hover{
+        width: 45px;
+        height: 47px;
+        right:7px;
+        font-size: 45px !important;
+        
+    }
+    .left-arrow:hover{
+        width: 45px;
+        height: 47px;
+        left:7px;
+        font-size: 45px !important;
+        
+    }
+    div.galeria-principal ul{
+        list-style: none;
+        width:100%;
+        padding-left:0;
+        left:0;
+        position:relative;
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -ms-transition: all .2s linear;
+        -o-transition: all .2s linear;
+        transition: all .2s linear;
+    }
+    div.galeria-principal ul li{
+        width: 100%;
+        padding:5px;
+        display:block;
+        text-align: center;
+        margin-right: 5px;
+        float:left;
+    }
+     div.galeria-principal ul img[orientation=L]{
+        -webkit-mask-image: url(../img/mask7751-lr-01.png);
+        -webkit-mask-size: 513px 340px;
+     }
+     div.galeria-principal ul img[orientation=P]{
+        -webkit-mask-image: url(../img/mask7751-pr-01.png);
+        -webkit-mask-size: 225px 340px;
+     }
+    div.galeria-principal ul img{
+        width:auto;
+        height: auto;
+        max-height: 340px;
+        max-width: 100%;
+        width:auto;
+        height: auto;
+        opacity: 1;
+        border-radius: 5px;
+        position:relative;
+        top: 0;
+        bottom:0;
+        left:0;
+        right: 0;
+        margin:auto;
+    }
+    div.miniaturas{
+        margin-top:15px;
+        width:80%;
+        overflow: hidden;
+        height: 100px;
+        background-color: rgba(0,0,0,.1);
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        clear: both;
+    }
+    div.miniaturas ul{
+        list-style: none;
+        width:200%;
+        max-height: 100px;
+        padding-left:0;
+        position:relative;
+        overflow:hidden;
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        -ms-transition: all .2s linear;
+        -o-transition: all .2s linear;
+        transition: all .2s linear;
+    }
+    div.miniaturas ul li{
+        width: 110px;
+        padding:2px;
+        height: 100px;
+        background-color: rgba(203,194,177,.5);
+        display:block;
+        text-align: center;
+        margin-right: 5px;
+        float:left;
+        position:relative;
+    }
+    div.miniaturas ul img{
+        width:auto;
+        height: auto;
+        max-height: 96px;
+        max-width: 96px;
+        opacity: .75;
+        border-radius: 2px;
+        position: absolute;
+        top: 0;
+        bottom:0;
+        left:0;
+        right: 0;
+        margin:auto;
+        
+    }
+    div.miniaturas ul img:hover{
+        opacity: 1;
+    }
+    #zooming-img{
+        border-style: solid;
+        border-width: 5px;
+        border-color: rgb(255,255,255);
+        border-radius: 5px;
+        box-shadow: 0px 0px 15px rgba(0,0,0,.7);
     }
 } 

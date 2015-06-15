@@ -1,4 +1,3 @@
-var img=1;
 var ViewPort = jQuery(window).width();
 var Container =ViewPort<768?0:(ViewPort<992?750:(ViewPort<1200?970:1170));
 function SetPosObjects(){
@@ -7,17 +6,6 @@ function SetPosObjects(){
     jQuery("div.logo").css("left",IniContainer+IniViewScreen);
     
 }
-function setImg(){
-    var imgtemp=img<=9?"0"+img:img;
-    jQuery("div.back-slider").css("background-image","url(galeria/"+imgtemp+".jpg)");
-    img++;
-    if(img>8){img=1;}
-}
-jQuery(window).load(function() {
-    jQuery("#spinner").remove();
-    setImg();
-    setInterval(function(){setImg();},5500);
-});
 jQuery(document).ready(function(){
    /* jQuery(".leaves-right").octoberLeaves({
     leafStyles: 1,      // Number of leaf styles in the sprite (leaves.png)

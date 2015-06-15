@@ -10,26 +10,22 @@ include_once dirname(__FILE__).'/basics/login.php';
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/customcss.css">
         <link rel="stylesheet" type="text/css" href="css/3d-falling-leaves.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/3d-falling-leaves.js"></script>
         <script src="js/rotate3Di.min.js"></script>
         <script type="text/javascript" src="js/jquery.jplayer.js"></script>
+        <script>
+            var GALERIAINFO=<?php echo $GALERIAINFO->JSONEncode(); ?>;
+            var fotoact=0;
+        </script>
         <script src="js/global.js"></script>
-        <script src="js/index.js"></script>
+        <script src="js/biografia.js"></script>
+        <script src="js/galeria.js"></script>
     </head>
     <body>
         <div class="hidden">
             <?php echo "caching images... Descargar todas las Imagenes"; ?>
-            <img src="img/spiner.gif" />
-            <img src="galeria/01.jpg" />
-            <img src="galeria/02.jpg" />
-            <img src="galeria/03.jpg" />
-            <img src="galeria/04.jpg" />
-            <img src="galeria/05.jpg" />
-            <img src="galeria/06.jpg" />
-            <img src="galeria/07.jpg" />
-            <img src="galeria/08.jpg" />
-            <img src="galeria/09.jpg" />
         </div>
         <div class="leaves-right"></div>
         <div class="leaves-left"></div>
@@ -40,13 +36,7 @@ include_once dirname(__FILE__).'/basics/login.php';
         <div class="audioplayer jp-pause">
         </div>
         <div class="hidden-lg hidden-md menu-mov "></div>
-        <div id="flyeffect" class="back-slider visible-lg-block visible-md-block visible-sm-block visible-xs-block">
-            <!-- Spinner de carga de fondo-->
-            <img id="spinner" class="center-img" src="img/spiner.gif">
-            <!-- Menu móvil lateral-->
-            <div class="logo hidden-lg hidden-md"></div>
-        </div>
-        <div class="container hidden-sm hidden-xs">
+        <div class="container fixClass hidden-sm hidden-xs">
             <div class="logo"></div>
             <a href=""><div class="rs-facebook"></div></a>
             <a href=""><div class="rs-instagram"></div>
@@ -68,15 +58,36 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <div class="col-lg-12 col-sm-12">
                                 <div class="row">
                                     <div class="col-lg-5 col-md-5"></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="index.php">Inicio</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="galeria.php">Galer&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="biografia.php">Biograf&iacute;a</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="servicios.php">Servicios</a></div>
-                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a href="contacto.php">Contacto</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="first" href="index.php">Inicio</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="galeria.php">Galer&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="biografia.php">Biograf&iacute;a</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="servicios.php">Servicios</a></div>
+                                    <div class="menu-item-dsk col-lg-1 col-md-1"><a class="menu" href="contacto.php">Contacto</a></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="titulo-pagina">
+                        >> Galeria
+                </div>
+                <div class="contenido">
+                    <div class="galeria-principal">
+                    <span class="left-arrow fa fa-arrow-circle-left"></span>
+                    <span class="right-arrow fa fa-arrow-circle-right"></span>
+                    <?php
+                        echo $GALERIAINFO->printListaPlana();
+                    ?>    
+                    </div>
+                    <div class="miniaturas">
+                    <?php
+                        echo $GALERIAINFO->printListaPlana();
+                    ?>    
+                    </div>
+                </div>
             </div>
         </div>
     </body>
