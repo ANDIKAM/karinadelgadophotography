@@ -5,57 +5,24 @@
     }
     if(isset($_REQUEST["exec-action"])){ //Verifica si hay acciones pendientes
     //Index
-        if($_REQUEST["exec-action"]==="index-slider-newphoto"){ //Elimina un servicio
-            $name= time().".jpg"; //Nombre autogenerado de la fotografia
-            if(isset($_FILES) && count($_FILES)> 0)
-            {  
-                $files = array();
-                $dir = $_SERVER["DOCUMENT_ROOT"].$prefix."/galeria/";
-                foreach($_FILES as $fl){
-                        $ext = strtolower(substr($fl['name'],strrpos($fl['name'],'.') +1));
-                        if($ext ==='jpg' || $ext ==='jpeg'){
-                        if($fl['size']<=524288 && $fl['error']==UPLOAD_ERR_OK){ //Solo admite 1MB
-                            if(file_exists($dir.$name)){
-                                unlink($dir.$name);
-                            }
-                            move_uploaded_file($fl['tmp_name'],$dir.$name);
-                            $SLIDERINFO->newImagen($name, $_REQUEST["index-slider-alt"], $_REQUEST["index-slider-nombre"]);
-                        }
-                    }
-                }
+        if($_REQUEST["exec-action"]==="update-smtp-configuration"){ //Elimina un servicio
+                $EMAILCONF->saveData($_REQUEST);
             }
-        }
-        if($_REQUEST["exec-action"]==="index-slider-editphoto"){ //Elimina un servicio
-            $name_new=time().".jpg"; //Nombre autogenerado de la fotografia
-            $name=$SLIDERINFO->EditarImagen($_REQUEST["index-slider-alt"], $_REQUEST["index-slider-nombre"],$_REQUEST["edit-photo-id"],$name_new);
-            
-            if(!is_null($name)){
-                if(isset($_FILES) && count($_FILES)> 0)
-                {  
-                    $files = array();
-                    $dir = $_SERVER["DOCUMENT_ROOT"].$prefix."/galeria/";
-                    foreach($_FILES as $fl){
-                            $ext = strtolower(substr($fl['name'],strrpos($fl['name'],'.') +1));
-                            if($ext ==='jpg' || $ext ==='jpeg'){
-                            if($fl['size']<=524288 && $fl['error']==UPLOAD_ERR_OK){ //Solo admite 1MB
-                                if(file_exists($dir.$name)){
-                                    unlink($dir.$name);
-                                }
-                                if(file_exists($dir.$name_new)){
-                                    unlink($dir.$name_new);
-                                }
-                                move_uploaded_file($fl['tmp_name'],$dir.$name_new);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if($_REQUEST["exec-action"]==="index-slider-deletephoto"){ //Elimina un servicio
-            $SLIDERINFO->eliminarImagen($_REQUEST["del-photo-id"]);
-        }
     }
-    $EMAILCONF_TEMP = $EMAILCONF->getData();
+    //update-contact-information
+    if(isset($_REQUEST["exec-action"])){ //Verifica si hay acciones pendientes
+    //Index
+        if($_REQUEST["exec-action"]==="update-contact-information"){ //Elimina un servicio
+                $CONTACTINFO->setNombre($_REQUEST["nombre"]);
+                $CONTACTINFO->setDescripcion($_REQUEST["descripcion"]);
+                $CONTACTINFO->setPais($_REQUEST["pais"]);
+                $CONTACTINFO->setDireccion($_REQUEST["direccion"]);
+                $CONTACTINFO->setCelular($_REQUEST["celular"]);
+                $CONTACTINFO->setTelefono($_REQUEST["telefono"]);
+            }
+    }
+    
+    $EMAILCONF_TEMP = $EMAILCONF->getData()[0];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -85,96 +52,16 @@
     <!-- The fav icon -->
     <link rel="shortcut icon" href="img/favicon.ico">
     <script>
-        function changeFile(elemento,container){
-            var fullFileName=$(elemento).val();
-            var FileName=fullFileName.substr(fullFileName.lastIndexOf("\\")+1, fullFileName.length);
-            $("#"+container+" #file-name-selected").text("Archivo seleccionado: "+FileName);
-            if($("#"+container+" #index-slider-nombre").val()==""){
-                $("#"+container+" #index-slider-nombre").val(FileName);
-            }
-            if($("#"+container+" #index-slider-alt").val()==""){
-                $("#"+container+" #index-slider-alt").val(FileName);
-            }
+        function ActualizarContactInformation(){
+            $("#contact-data").submit();
         }
-        function AgregarFotografia(){
-            $("<form id=\"slider-info-form\" enctype=\"multipart/form-data\" name=\"slider-info-form\" method=\"post\" action=\"#SELF\">"+
-              "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-newphoto\"/>"+
-                "<label for=\"fotografia\">Agregar Imagen:</label><br>"+
-                "<span class=\"btn btn-default btn-file\">"+
-                "Seleccionar archivo <input type=\"file\" name=\"fotografia\" onchange=\"changeFile(this,'slider-info-form')\" id=\"slider-fotografia\">"+
-                "</span>"+
-                "<span id=\"file-name-selected\"></span>"+
-                "<p class=\"help-block\">Si desea agregue la fotografia, s&oacute;lo JPG o JPEG(Máximo 500kb, archivos de mayor tama&ntilde;o no ser&aacute;n cargados).</p>"+
-                "</div>"+
-                "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-nombre\" name=\"index-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
-                "</div>"+
-                "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-alt\" name=\"index-slider-alt\" placeholder=\"Ingrese el texto alterno\"/>"+
-                "</div>"+
-                "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"524288\" />"+
-              "</form>").AndikamModalDialog({alto:'400',
-                                             ancho:'500',
-                                             titulo:"Agregar nueva fotograf&iacute;a",
+        
+        function ActualizarSMTP(){
+            $("<div>¿Est&aacute; seguro de actualizar esta informaci&oacute;n?, un par&aacute;metro mal configurado podria ocasionar problemas para el env&iacute;o de mensajes desde su p&aacute;gina WEB.</div>").AndikamModalDialog({alto:'250',
+                                             ancho:'350',
+                                             titulo:"Actualizar datos SMTP",
                                              ok:function(){
-                                                    if($("#slider-fotografia").val()!=""){
-                                                       $("#slider-info-form").submit();
-                                                    }else{
-                                                        alert("Para aceptar debe seleccionar un archivo");
-                                                    }
-                                                 },
-                                             buttons:{ok:true}});
-        }
-        function EditarFotografia(alt,nombre,id,url){
-            $("<form id=\"slider-info-form-edit\" enctype=\"multipart/form-data\" name=\"slider-info-form-edit\" method=\"post\" action=\"#SELF\">"+
-              "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-editphoto\"/>"+
-                "<input type=\"hidden\" name=\"edit-photo-id\" value=\""+id+"\"/>"+
-                "<label for=\"fotografia\">Editar Imagen:</label><br>"+
-                "<span class=\"btn btn-default btn-file\">"+
-                "Seleccionar archivo <input type=\"file\" name=\"fotografia\" onchange=\"changeFile(this,'slider-info-form-edit')\" id=\"slider-fotografia\">"+
-                "</span>"+
-                "<span id=\"file-name-selected\"></span>"+
-                "<p class=\"help-block\">Si desea agregue la fotografia, s&oacute;lo JPG o JPEG(Máximo 500kb, archivos de mayor tama&ntilde;o no ser&aacute;n cargados).</p>"+
-                "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
-                "</div>"+
-                "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-nombre\">Nombre de la fotograf&iacute;a:</label>"+
-                      "<input type=\"text\" class=\"form-control\"  value=\""+nombre+"\" id=\"index-slider-nombre\" name=\"index-slider-nombre\" placeholder=\"Ingrese el nombre para firma\"/>"+
-                "</div>"+
-                "<div class=\"form-group\">"+
-                      "<label for=\"index-slider-alt\">Texto alterno [ALT] de la Imagen (usado por los buscadores):</label>"+
-                      "<input type=\"text\" class=\"form-control\" id=\"index-slider-alt\" name=\"index-slider-alt\"  value=\""+alt+"\" placeholder=\"Ingrese el texto alterno\"/>"+
-                "</div>"+
-                "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"524288\" />"+
-              "</form>").AndikamModalDialog({alto:'550',
-                                             ancho:'500',
-                                             titulo:"Editar fotograf&iacute;a",
-                                             ok:function(){
-                                                    if($("#slider-fotografia").val()!=""){
-                                                       $("#slider-info-form-edit").submit();
-                                                    }else{
-                                                        alert("Para aceptar debe seleccionar un archivo");
-                                                    }
-                                                 },
-                                             buttons:{ok:true}});
-        }
-        function EliminarFotografia(id,url){
-            $("<form id=\"slider-info-form-delete\" enctype=\"multipart/form-data\" name=\"slider-info-form-delete\" method=\"post\" action=\"#SELF\">"+
-              "<div class=\"form-group\">"+
-                "<input type=\"hidden\" name=\"exec-action\" value=\"index-slider-deletephoto\"/>"+
-                "<input type=\"hidden\" name=\"del-photo-id\" value=\""+id+"\"/>"+
-                "<label>¿Est&aacute; seguro de eliminar la fotograf&iacute;a?</label><br>"+
-                "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
-                "</div>"+
-              "</form>").AndikamModalDialog({alto:'300',
-                                             ancho:'400',
-                                             titulo:"Eliminar fotograf&iacute;a",
-                                             ok:function(){
-                                                    $("#slider-info-form-delete").submit();
+                                                  jQuery("#SMTP-data").submit();
                                                  },
                                              buttons:{ok:true}});
         }
@@ -322,7 +209,8 @@
                   </h2>
                    <h3 style="margin-top:20px;">Datos de contacto<br>
                    </h3>
-                   <form id="contact-data" style="margin-left:40px;">
+                   <form id="contact-data" action="#SELF" style="margin-left:40px;">
+                       <input type="hidden" name="exec-action" value="update-contact-information"/>
                        <input type="hidden" name="texto" value="---"/>
                        <input type="hidden" name="estado" value="---"/>
                        <input type="hidden" name="ciudad" value="---"/>
@@ -330,33 +218,34 @@
                        <input type="hidden" name="latitud" value="---"/>
                         <div class="form-group" >
                           <label for="nombre">Nombre:</label>
-                          <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
+                          <input type="text" value="<?php echo $CONTACTINFO->getNombre(); ?>" class="form-control" name="nombre" id="nombre" placeholder="Ingrese su nombre">
                         </div>
                        <div class="form-group">
                           <label for="descripcion">Descripci&oacute;n:</label>
-                          <input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese descripción o profesión">
+                          <input type="text" value="<?php echo $CONTACTINFO->getDescripcion(); ?>" class="form-control" name="descripcion" id="descripcion" placeholder="Ingrese descripción o profesión">
                         </div>
                        <div class="form-group">
                           <label for="pais">Pa&iacute;s:</label>
-                          <input type="text" class="form-control" name="pais" id="pais" placeholder="Ingrese un país">
+                          <input type="text" value="<?php echo $CONTACTINFO->getPais(); ?>" class="form-control" name="pais" id="pais" placeholder="Ingrese un país">
                        </div>
                        <div class="form-group">
                           <label for="direccion">Direcci&oacute;n:</label>
-                          <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese una dirección">
+                          <input type="text" value="<?php echo $CONTACTINFO->getDireccion(); ?>" class="form-control" name="direccion" id="direccion" placeholder="Ingrese una dirección">
                        </div>
                        <div class="form-group">
                           <label for="celular">Celular:</label>
-                          <input type="text" class="form-control" name="pais" id="pais" placeholder="Ingrese un celular">
+                          <input type="text" value="<?php echo $CONTACTINFO->getCelular(); ?>"  class="form-control" name="celular" id="celular" placeholder="Ingrese un celular">
                        </div>
                        <div class="form-group">
                            <label for=telefono">Tel&eacute;fono:</label>
-                          <input type="text" class="form-control" name="telefono" id="telefono" placeholder="Ingrese un teléfono fijo">
+                          <input type="text" value="<?php echo $CONTACTINFO->getTelefono(); ?>" class="form-control" name="telefono" id="telefono" placeholder="Ingrese un teléfono fijo">
                        </div>
-                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="AgregarFotografia()" role="button">Actualizar</a></div>
+                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="ActualizarContactInformation()" role="button">Actualizar</a></div>
                    </form>
                    <h3 style="margin-top:20px;">Datos de servidor de correos<br>
                    </h3>
-                   <form id="contact-data" style="margin-left:40px;width:40%">
+                   <form id="SMTP-data" action="#SELF" style="margin-left:40px;width:40%">
+                       <input type="hidden" name="exec-action" value="update-smtp-configuration"/>
                         <div class="form-group" >
                           <label for="SMTPAuth">SMTPAuth:</label>
                           <select class="form-control" name="SMTPAuth" id="SMTPAuth">
@@ -366,7 +255,7 @@
                         </div>
                         <div class="form-group" >
                           <label for="nombre">SMTPSecure:</label>
-                          <select class="form-control">
+                          <select class="form-control" name="SMTPSecure" id="SMTPSecure">
                             <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="ssl"?"selected=true":"";?>  value="ssl">SSL</option>
                             <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="tls"?"selected=true":"";?> value="tls">TLS</option>
                             <option <?php echo $EMAILCONF_TEMP["SMTPSecure"]=="none"?"selected=true":"";?> value="none">Ninguno</option>
@@ -374,33 +263,33 @@
                         </div>
                         <div class="form-group">
                           <label for="HOST">HOST - Servidor:</label>
-                          <input type="text" class="form-control" name="HOST" id="HOST" placeholder="IP o Dominio servidor SMTP">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["HOST"])?$EMAILCONF_TEMP["HOST"]:""; ?>" class="form-control" name="HOST" id="HOST" placeholder="IP o Dominio servidor SMTP">
                         </div>
                         <div class="form-group">
                           <label for="Port">Puerto:</label>
-                          <input type="text" class="form-control" name="Port" id="Port" placeholder="Puerto de conexión con servidor SMTP">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["Port"])?$EMAILCONF_TEMP["Port"]:""; ?>" class="form-control" name="Port" id="Port" placeholder="Puerto de conexión con servidor SMTP">
                         </div>
                        <div class="form-group">
                           <label for="Username">Nombre de usuario:</label>
-                          <input type="text" class="form-control" name="Username" id="Username" placeholder="Nombre de usuario">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["Username"])?$EMAILCONF_TEMP["Username"]:""; ?>" class="form-control" name="Username" id="Username" placeholder="Nombre de usuario">
                         </div>
                         <div class="form-group">
                           <label for="Pass">Password:</label>
-                          <input type="text" class="form-control" name="Pass" id="Pass" placeholder="Contraseña">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["Pass"])?$EMAILCONF_TEMP["Pass"]:""; ?>" class="form-control" name="Pass" id="Pass" placeholder="Contraseña">
                         </div>
                         <div class="form-group">
                           <label for="SetFrom">Enviado por:</label>
-                          <input type="text" class="form-control" name="SetFrom" id="SetFrom" placeholder="Enviado por (alias)">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["SetFrom"])?$EMAILCONF_TEMP["SetFrom"]:""; ?>" class="form-control" name="SetFrom" id="SetFrom" placeholder="Enviado por (alias)">
                         </div>
                         <div class="form-group">
                           <label for="SetFromName">Nombre de remitente:</label>
-                          <input type="text" class="form-control" name="SetFromName" id="SetFromName" placeholder="Nombre de remitente">
+                          <input type="text" value="<?php echo isset($EMAILCONF_TEMP["SetFromName"])?$EMAILCONF_TEMP["SetFromName"]:""; ?>" class="form-control" name="SetFromName" id="SetFromName" placeholder="Nombre de remitente">
                         </div>
                         <div class="form-group">
                           <label for="AddReplyTo">Responder a:</label>
-                          <input type="text" class="form-control" name="AddReplyTo" id="AddReplyTo" placeholder="Dirección de email de respuesta">
+                          <input type="text" class="form-control" name="AddReplyTo" id="AddReplyTo" value="<?php echo isset($EMAILCONF_TEMP["AddReplyTo"])?$EMAILCONF_TEMP["AddReplyTo"]:""; ?>" placeholder="Dirección de email de respuesta">
                         </div>
-                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="AgregarFotografia()" role="button">Actualizar</a></div>
+                       <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="ActualizarSMTP()" role="button">Actualizar</a></div>
                    </form>
                   
                 </div>

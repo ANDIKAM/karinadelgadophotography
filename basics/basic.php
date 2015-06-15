@@ -1,6 +1,6 @@
 <?php
 include_once dirname(__FILE__).'/../basics/basic.php';
-$prefix="/karinadelgadophotography";
+$prefix="";
 function curPageURL() {
  $pageURL = 'http';
  if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
@@ -624,7 +624,7 @@ class contactinfo extends HTMLUtils{
     }
     
     private function _Update(){
-        $Query = "UPDATE contactinfo SET telefono='',".
+        $Query = "UPDATE contactinfo SET telefono='$this->telefono',".
                         "celular='$this->celular',".
                         "direccion='$this->direccion',".
                         "ciudad='$this->ciudad',".

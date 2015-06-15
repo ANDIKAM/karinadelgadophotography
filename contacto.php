@@ -81,10 +81,11 @@ include_once dirname(__FILE__).'/basics/login.php';
                     </div>
                     <div class="contenido-contacto">
                         <div class="contacto-informacion">
-                            <strong>Karina Delgado</strong><br>
-                            Fot&oacute;grafa profesional<br><br>
-                            <strong>Direcci&oacute;n:</strong> Calle #1 con carrera 1, frente al edificio 1, Ciudad con nombre en el pais con nombre<br>
-                            <div style="overflow:hidden;" class="contacto-gmaps"><div id="gmap_canvas"></div><style>#gmap_canvas img{max-width:none!important;background:none!important}</style><a class="google-map-code" href="#" id="get-map-data">---</a></div><script type="text/javascript"> function init_map(){var myOptions = {zoom:15,center:new google.maps.LatLng(7.8890971,-72.49668959999997),mapTypeId: google.maps.MapTypeId.ROADMAP};map = new google.maps.Map(document.getElementById("gmap_canvas"), myOptions);marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(7.8890971, -72.49668959999997)});infowindow = new google.maps.InfoWindow({content:"<b>Karina Delgado</b><br/>Oficina<br/> Cucuta" });google.maps.event.addListener(marker, "click", function(){infowindow.open(map,marker);});infowindow.open(map,marker);}google.maps.event.addDomListener(window, 'load', init_map);</script>
+                            <strong style="font-size: x-large" ><?php echo $CONTACTINFO->getNombre(); ?></strong><br>
+                            <?php echo $CONTACTINFO->getDescripcion(); ?><br><br>
+                            <?php echo $CONTACTINFO->getDireccion()!=""?"<strong>Direccion:&nbsp;</strong>".$CONTACTINFO->getDireccion().", ".$CONTACTINFO->getPais()."<br>":""; ?>
+                            <?php echo $CONTACTINFO->getTelefono()!=""?"<strong>Telefono:&nbsp;</strong>".$CONTACTINFO->getTelefono()."<br>":""; ?>
+                            <?php echo $CONTACTINFO->getCelular()!=""?"<strong>Celular:&nbsp;</strong>".$CONTACTINFO->getCelular()."<br>":""; ?>
                         </div>
                         <div class="contacto-formulario">
                             <form>
@@ -113,7 +114,7 @@ include_once dirname(__FILE__).'/basics/login.php';
                                 <input type="checkbox" name="no-robot"> Acepto enviar el formulario de contacto con mi informaci&oacute;n personal.
                               </label>
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" style="font-size: large" class="btn btn-primary">Enviar Mensaje</button>
                             </form>
                         </div>                 
                     </div>
