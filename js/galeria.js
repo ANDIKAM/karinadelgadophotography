@@ -38,7 +38,9 @@ function select_directo(index){
     var offset_min=index*115+"px";
     var offset_big=index*bigOffset+"px";
     jQuery("div.miniaturas ul").css("left","-"+offset_min);
-    jQuery("div.galeria-principal ul").css("top","-"+offset_big);
+    jQuery("div.galeria-principal ul").fadeOut(200,function (){
+        jQuery("div.galeria-principal ul").css("top","-"+offset_big);
+    }).fadeIn(200);
 }
 jQuery(window).load(function() {
     jQuery("#spinner").remove();
