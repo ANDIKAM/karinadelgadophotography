@@ -19,6 +19,7 @@
                 $CONTACTINFO->setDireccion($_REQUEST["direccion"]);
                 $CONTACTINFO->setCelular($_REQUEST["celular"]);
                 $CONTACTINFO->setTelefono($_REQUEST["telefono"]);
+                $CONTACTINFO->setCorreo($_REQUEST["correo"]);
             }
     }
     
@@ -61,6 +62,7 @@
                                              ancho:'350',
                                              titulo:"Actualizar datos SMTP",
                                              ok:function(){
+                                                  jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                   jQuery("#SMTP-data").submit();
                                                  },
                                              buttons:{ok:true}});
@@ -130,14 +132,15 @@
                         </li>
                         <li><a class="ajax-link" href="personal.php"><i class="glyphicon glyphicon-user"></i><span> Sobre mí</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
+                        <li><a class="ajax-link" href="contacto.php"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
                         </li>
                         <li><a class="ajax-link" href="galeria.php"><i class="glyphicon glyphicon-picture"></i><span> Galería</span></a>
                         </li>
                         <li><a class="ajax-link" href="servicios.php"><i class="glyphicon glyphicon-camera"></i><span> Servicios</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
+                        <li><a class="ajax-link" href="http://email.karinadelgadophotography.com/etc/apps/webmail/" target="_blank"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
                         </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -165,29 +168,6 @@
         </li>
     </ul>
 </div>
-<!-- Introducción -->
-<div class="row">
-    <div class="box col-md-12">
-        <div class="box-inner">
-            <div class="box-header well">
-                <h2><i class="glyphicon glyphicon-info-sign"></i>Introduccion</h2>
-            </div>
-            <div class="box-content row">
-                <div class="col-lg-7 col-md-12">
-                    <h2>Página principal "Home"<br>
-                        <small>Sitio premium ofrecido por ANDIKAM SAS, Potenciado por HTML5, JavaScript y SQLite</small>
-                    </h2>
-                </div>
-                <div class="col-lg-12 col-md-12">
-                    <p>
-                        Puede utilizar esta página para editar todo lo que desea que aparezca en su sitio web referente a las características generales del mismo, desde el título, la descripción y las imágenes del SLIDER principal.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Ediciones Generales -->
 <div class="row">
     <div class="box col-md-12">
@@ -239,6 +219,10 @@
                        <div class="form-group">
                            <label for=telefono">Tel&eacute;fono:</label>
                           <input type="text" value="<?php echo $CONTACTINFO->getTelefono(); ?>" class="form-control" name="telefono" id="telefono" placeholder="Ingrese un teléfono fijo">
+                       </div>
+                       <div class="form-group">
+                           <label for=correo">Correo Electr&oacute;nico:</label>
+                          <input type="text" value="<?php echo $CONTACTINFO->getCorreo(); ?>" class="form-control" name="correo" id="correo" placeholder="Ingrese un correo electrónico">
                        </div>
                        <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="ActualizarContactInformation()" role="button">Actualizar</a></div>
                    </form>
