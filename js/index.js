@@ -7,6 +7,7 @@ function setImg(){
 }
 jQuery(window).load(function() {
     jQuery("#spinner").remove();
+    jQuery(".center-img-container").remove();
     setImg();
     setInterval(function(){setImg();},5500);
 });

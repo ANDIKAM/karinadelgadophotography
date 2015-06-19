@@ -20,7 +20,11 @@
                             }
                             move_uploaded_file($fl['tmp_name'],$dir.$name);
                             $GALERIAINFO->newImagen($name, $_REQUEST["galeria-slider-alt"], $_REQUEST["galeria-slider-nombre"]);
-                        }
+                        }else{
+                                echo "<script>alert(\"Error al subir el archivo o el tamaño del archivo supera los 500kb, por favor reduzca su tamaño o intente con otra fotografia.\");</script>";
+                            }
+                    }else{
+                            echo "<script>alert(\"No se admite el formato del archivo seleccionado, solo se pueden cargar imágenes JPG o JPEG.\");</script>";
                     }
                 }
             }
@@ -45,7 +49,11 @@
                                     unlink($dir.$name_new);
                                 }
                                 move_uploaded_file($fl['tmp_name'],$dir.$name_new);
+                            }else{
+                                echo "<script>alert(\"Error al subir el archivo o el tamaño del archivo supera los 500kb, por favor reduzca su tamaño o intente con otra fotografia.\");</script>";
                             }
+                        }else{
+                            echo "<script>alert(\"No se admite el formato del archivo seleccionado, solo se pueden cargar imágenes JPG o JPEG.\");</script>";
                         }
                     }
                 }
@@ -71,6 +79,7 @@
     <link href="css/charisma-app.css" rel="stylesheet">
     <link href='css/animate.min.css' rel='stylesheet'>
     <link href='css/basic.css' rel='stylesheet'>
+    
 
     <!-- jQuery -->
     <script src="bower_components/jquery/jquery.min.js"></script>
@@ -121,6 +130,7 @@
                                              titulo:"Agregar nueva fotograf&iacute;a",
                                              ok:function(){
                                                     if($("#slider-fotografia").val()!=""){
+                                                       jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                        $("#slider-info-form").submit();
                                                     }else{
                                                         alert("Para aceptar debe seleccionar un archivo");
@@ -155,6 +165,7 @@
                                              titulo:"Editar fotograf&iacute;a",
                                              ok:function(){
                                                     if($("#slider-fotografia").val()!=""){
+                                                       jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                        $("#slider-info-form-edit").submit();
                                                     }else{
                                                         alert("Para aceptar debe seleccionar un archivo");
@@ -170,10 +181,11 @@
                 "<label>¿Est&aacute; seguro de eliminar la fotograf&iacute;a?</label><br>"+
                 "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
                 "</div>"+
-              "</form>").AndikamModalDialog({alto:'300',
+              "</form>").AndikamModalDialog({alto:'350',
                                              ancho:'400',
                                              titulo:"Eliminar fotograf&iacute;a",
                                              ok:function(){
+                                                    jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                     $("#galeria-info-form-delete").submit();
                                                  },
                                              buttons:{ok:true}});
@@ -243,14 +255,15 @@
                         </li>
                         <li><a class="ajax-link" href="personal.php"><i class="glyphicon glyphicon-user"></i><span> Sobre mí</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
+                        <li><a class="ajax-link" href="contacto.php"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
                         </li>
                         <li><a class="ajax-link" href="galeria.php"><i class="glyphicon glyphicon-picture"></i><span> Galería</span></a>
                         </li>
                         <li><a class="ajax-link" href="servicios.php"><i class="glyphicon glyphicon-camera"></i><span> Servicios</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
+                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
                         </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -297,10 +310,16 @@
                   <h2>Edición de Galeria principal del Sitio<br>
                         <small>Edite, agregue u ordene las fotograf&iacute;as de la galeria principal</small>
                   </h2>
-                  <a class="btn btn-default" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  <a class="btn btn-success" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  <div style="width: 100%; float:left; clear:both">
                     <?php
                             echo $GALERIAINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
                     ?>
+                  </div>
+                  <div style="width: 100%; float:left; clear:both">
+                      <a class="btn btn-success" style="margin-top:30px; margin-bottom: 30px;" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  </div>
+                  
                 </div>
             </div>
         </div>

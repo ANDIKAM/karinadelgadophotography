@@ -38,6 +38,10 @@
         jQuery("#andikam-modal-window .panel-body").append(this);
         jQuery("#andikam-modal-window .panel-footer #Cancelar").click(settings.destroy);
         if(settings.buttons.ok===true){
+            /*jQuery("#andikam-modal-window .panel-footer #Aceptar").bind("click",
+                                function(){
+                                    jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
+                                });*/
             jQuery("#andikam-modal-window .panel-footer #Aceptar").click(settings.ok);
         }
     };

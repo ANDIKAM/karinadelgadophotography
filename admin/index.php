@@ -20,7 +20,11 @@
                             }
                             move_uploaded_file($fl['tmp_name'],$dir.$name);
                             $SLIDERINFO->newImagen($name, $_REQUEST["index-slider-alt"], $_REQUEST["index-slider-nombre"]);
+                        }else{
+                            echo "<script>alert(\"Error al subir el archivo o el tamaño del archivo supera los 500kb, por favor reduzca su tamaño o intente con otra fotografia.\");</script>";
                         }
+                    }else{
+                            echo "<script>alert(\"No se admite el formato del archivo seleccionado, solo se pueden cargar imágenes JPG o JPEG.\");</script>";
                     }
                 }
             }
@@ -45,7 +49,11 @@
                                     unlink($dir.$name_new);
                                 }
                                 move_uploaded_file($fl['tmp_name'],$dir.$name_new);
+                            }else{
+                                echo "<script>alert(\"Error al subir el archivo o el tamaño del archivo supera los 500kb, por favor reduzca su tamaño o intente con otra fotografia.\");</script>";
                             }
+                        }else{
+                            echo "<script>alert(\"No se admite el formato del archivo seleccionado, solo se pueden cargar imágenes JPG o JPEG.\");</script>";
                         }
                     }
                 }
@@ -53,6 +61,10 @@
         }
         if($_REQUEST["exec-action"]==="index-slider-deletephoto"){ //Elimina un servicio
             $SLIDERINFO->eliminarImagen($_REQUEST["del-photo-id"]);
+        }
+        if($_REQUEST["exec-action"]==="index-update-site-information"){ //Elimina un servicio
+            $SITE->setTitulo($_REQUEST["titulo"]);
+            $SITE->setDescripcion($_REQUEST["descripcion"]);
         }
     }
 ?>
@@ -120,6 +132,7 @@
                                              titulo:"Agregar nueva fotograf&iacute;a",
                                              ok:function(){
                                                     if($("#slider-fotografia").val()!=""){
+                                                        jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                        $("#slider-info-form").submit();
                                                     }else{
                                                         alert("Para aceptar debe seleccionar un archivo");
@@ -154,6 +167,7 @@
                                              titulo:"Editar fotograf&iacute;a",
                                              ok:function(){
                                                     if($("#slider-fotografia").val()!=""){
+                                                       jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                        $("#slider-info-form-edit").submit();
                                                     }else{
                                                         alert("Para aceptar debe seleccionar un archivo");
@@ -169,10 +183,11 @@
                 "<label>¿Est&aacute; seguro de eliminar la fotograf&iacute;a?</label><br>"+
                 "<div class=\"img-container\"><img class=\"slider-info-preview\" src=\""+url+"\"/></div>"+
                 "</div>"+
-              "</form>").AndikamModalDialog({alto:'300',
+              "</form>").AndikamModalDialog({alto:'350',
                                              ancho:'400',
                                              titulo:"Eliminar fotograf&iacute;a",
                                              ok:function(){
+                                                    jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                     $("#slider-info-form-delete").submit();
                                                  },
                                              buttons:{ok:true}});
@@ -242,14 +257,15 @@
                         </li>
                         <li><a class="ajax-link" href="personal.php"><i class="glyphicon glyphicon-user"></i><span> Sobre mí</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
+                        <li><a class="ajax-link" href="contacto.php"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
                         </li>
                         <li><a class="ajax-link" href="galeria.php"><i class="glyphicon glyphicon-picture"></i><span> Galería</span></a>
                         </li>
                         <li><a class="ajax-link" href="servicios.php"><i class="glyphicon glyphicon-camera"></i><span> Servicios</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
+                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
                         </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -322,31 +338,38 @@
                 </div>
                 <div class="col-lg-12 col-md-12">
                     <form class="form-horizontal">
+                    <input type="hidden" name="exec-action" value="index-update-site-information"/>
                     <div class="form-group">
-                      <label for="titulo" class="col-sm-2 control-label">Título</label>
+                      <label for="titulo" class="col-sm-2 control-label">Informaci&oacute;n del sitio</label>
                       <div class="col-sm-8">
-                        <input type="email" class="form-control" id="titulo" value="<?php echo $SITE->getTitulo(); ?>" placeholder="Título del sitio">
+                        <input type="text" class="form-control" name="titulo" id="titulo" value="<?php echo $SITE->getTitulo(); ?>" placeholder="Título del sitio">
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-2 control-label">Descripción</label>
+                      <label for="descripcion" class="col-sm-2 control-label">Descripción</label>
                       <div class="col-sm-8">
-                        <textarea class="form-control" rows="3" placeholder="Descripción del sitio"><?php echo $SITE->getDescripcion(); ?></textarea>
+                        <textarea class="form-control" rows="3" name="descripcion" id="descripcion" placeholder="Descripción del sitio"><?php echo $SITE->getDescripcion(); ?></textarea>
                       </div>
                     </div>
                     <div class="form-group">
                       <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Actualizar Parámetros</button>
+                        <button type="submit" class="btn btn-primary">Actualizar Parámetros</button>
                       </div>
                     </div>
                   </form>
                   <h2 style="margin-top:20px;">Edici&oacute;n de slider principal<br>
                         <small>Ac&aacute; puede agregar, eliminar o editar fotograf&iacute;s para el Slider principal.</small>
                   </h2>
-                  <a class="btn btn-default" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  <a class="btn btn-success" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  <div style="width: 100%; float:left; clear:both">
                     <?php
-                            echo $SLIDERINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
-                    ?>
+                              echo $SLIDERINFO->printListaGaleria("sliderprincipal","EditarFotografia","EliminarFotografia");
+                    ?>    
+                  </div>
+                  <div style="width: 100%; float:left; clear:both">
+                      <a class="btn btn-success" style="margin-top:30px; margin-bottom: 30px;" href="#" onClick="AgregarFotografia()" role="button">Agregar Fotografia</a>
+                  </div>
+                  
                 </div>
             </div>
         </div>

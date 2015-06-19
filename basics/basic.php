@@ -46,25 +46,23 @@ class DataBase{
     }
 }
 
-class siteinfo extends galeriainfo{
+class siteinfo extends HTMLUtils{
     private $titulo;
     private $creditos;
     private $DataBase;
     private $URLDoc;
     private $URLWeb;
-    private $descipcion;
-    private $galeria;
+    private $descripcion;
     private $URLEmail;
     private $PathToFile;
     function siteinfo($URLDoc,$URLWeb){
-        $this->galeria=array();
         $this->PathToFile=$URLDoc.'/data/siteinfo.xml';
         $this->DataBase= new DataBase();
         $RESULTADO= $this->DataBase->ExecSelect("SELECT * FROM siteinfo");
         $this->titulo=$RESULTADO[0]["titulo"];
         $this->URLEmail=$RESULTADO[0]["emailURL"];
         $this->creditos=$RESULTADO[0]["creditos"];
-        $this->descipcion = $RESULTADO[0]["descripcion"];
+        $this->descripcion = $RESULTADO[0]["descripcion"];
         $this->URLDoc = $URLDoc;
         $this->URLWeb = $URLWeb;
     }
@@ -72,7 +70,10 @@ class siteinfo extends galeriainfo{
         return $this->URLEmail;
     }
     public function getDescripcion(){
-        return $this->descipcion;
+        return $this->fromHTMLEntities($this->descripcion);
+    }
+    public function getDescripcion_Raw(){
+        return $this->descripcion;
     }
     public function getURLDocuments(){
         return $this->URLDoc;
@@ -84,6 +85,12 @@ class siteinfo extends galeriainfo{
         return $this->titulo;
     }
     public function getCreditos(){
+        return $this->fromHTMLEntities($this->creditos);
+    }
+    public function getTitulo_Raw(){
+        return $this->titulo;
+    }
+    public function getCreditos_Raw(){
         return $this->creditos;
     }
     public function setTitulo($titulo){
@@ -95,14 +102,14 @@ class siteinfo extends galeriainfo{
     }
     public function setCreditos($creditos){
         if(trim($creditos)!=""){
-            $this->creditos=trim($creditos);
+            $this->creditos=$this->toHTMLEntities(trim($creditos));
             $this->_Update();
         }
         return false;
     }
     public function setDescripcion($descripcion){
         if(trim($descripcion)!=""){
-            $this->creditos=trim($descripcion);
+            $this->descripcion=$this->toHTMLEntities(trim($descripcion));
             $this->_Update();
         }
         return false;
@@ -110,8 +117,8 @@ class siteinfo extends galeriainfo{
     private function _Update(){
             $Query = "UPDATE siteinfo SET titulo='$this->titulo',".
                  "creditos='$this->creditos',".
-                 "emailURL='$this->emailURL',".
-                 "descripcion='$this->descipcion'";
+                 "emailURL='$this->URLEmail',".
+                 "descripcion='$this->descripcion'";
         $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['SYSTEMINFO'] = $this;
@@ -265,8 +272,6 @@ class loginfo{
         $this->password=$RESULTADO[0]["password"];
         $this->nombre=$RESULTADO[0]["nombre"];
         $this->correo=$RESULTADO[0]["email"];
-        $RESULTADO=$this->DataBase->ExecSelect("SELECT * FROM slider_principal");
-        $ver="";
     }
     public function GetSiteFullInternalUrl(){
         return $this->URLFullPath;
@@ -423,7 +428,7 @@ class loginfo{
     }
     public function setCorreo($correo){
         if(trim($correo)!=""){
-            $this->correo=$corro;
+            $this->correo=$correo;
             $this->_Update();
         }
         return false;

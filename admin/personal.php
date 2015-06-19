@@ -74,6 +74,7 @@
                                                                                                                 ancho:'500',
                                                                                                                 titulo:"Eliminar Servicio",
                                                                                                                 ok:function(){
+                                                                                                                    jQuery("#andikam-modal-window .panel-footer #Aceptar").attr("disabled","disabled");
                                                                                                                     $("#personal-info-form").submit();
                                                                                                                    },
                                                                                                                 buttons:{ok:true}});
@@ -143,14 +144,15 @@
                         </li>
                         <li><a class="ajax-link" href="personal.php"><i class="glyphicon glyphicon-user"></i><span> Sobre mí</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
+                        <li><a class="ajax-link" href="contacto.php"><i class="glyphicon glyphicon-earphone"></i><span> Contacto</span></a>
                         </li>
-                        <li><a class="ajax-link" href="gallery.html"><i class="glyphicon glyphicon-picture"></i><span> Galería</span></a>
+                        <li><a class="ajax-link" href="galeria.php"><i class="glyphicon glyphicon-picture"></i><span> Galería</span></a>
                         </li>
                         <li><a class="ajax-link" href="servicios.php"><i class="glyphicon glyphicon-camera"></i><span> Servicios</span></a>
                         </li>
-                        <li><a class="ajax-link" href="ui.html"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
+                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
                         </li>
+                    </ul>
                 </div>
             </div>
         </div>

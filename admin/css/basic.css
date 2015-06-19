@@ -13,8 +13,10 @@
     list-style:none;
 }
 #slider-info-form-edit img, #slider-info-form-delete img, #galeria-info-form-delete img{
-    width: 180px;
+    max-width: 180px;
     height: auto;
+    width:auto;
+    max-height: 180px;
     border-radius: 5px;
     margin:10px 0px 10px 0px;
     border-style: solid;
@@ -34,30 +36,38 @@
     margin:10px;
     display:block;
     width: 230px;
+    height: 280px;
     padding:10px;
     border-radius:5px;
     background-color: rgba(0,0,0,.05);
     float:left;
+    position:relative;
 }
 .sliderprincipal-lista-galeria li:hover{
     background-color: rgba(0,0,0,.1);
 }
 .sliderprincipal-lista-galeria li img{
-    width: 180px;
+    max-width: 180px;
     height: auto;
+    width:auto;
+    max-height: 180px;
     border-radius: 5px;
-    margin-top: 10px;
     border-style: solid;
     border-color: white;
     border-width: 3px;
-    margin-left:auto;
-    margin-right: auto;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     box-shadow: 0px 0px 7px #888888;
 }
 .sliderprincipal-lista-galeria li .acciones{
-    width:100%;
+    width:calc(100% - 10px);
     text-align: center;
-    margin-top:10px;
+    position:absolute;
+    bottom:10px;
 }
 .sliderprincipal-lista-galeria li .acciones .btn{
     width:80px;
@@ -66,6 +76,8 @@
 }
 .sliderprincipal-lista-galeria li .texto{
     width:100%;
+    height: 210px;
+    position:relative;
     text-align: center;
 }
 

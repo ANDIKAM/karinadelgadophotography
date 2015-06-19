@@ -41,19 +41,16 @@ include_once dirname(__FILE__).'/basics/login.php';
         <div class="audioplayer jp-pause">
         </div>
         <div class="hidden-lg hidden-md menu-mov "></div>
-        <div class="container fixClass hidden-sm hidden-xs">
-            <div class="logo"></div>
-            <a href=""><div class="rs-facebook"></div></a>
-            <a href=""><div class="rs-instagram"></div>
-            <a href=""><div class="rs-500px"></div>
-            
-        </div>
+        <div class="logo"></div>
+        <a href="https://www.facebook.com/karina.delgado.14473" target="_blank"><div class="rs-facebook"></div></a>
+        <a href="https://instagram.com/karinadelgadofotografa/" target="_blank"><div class="rs-instagram"></div></a>
+        <a href="https://500px.com/djkarina" target="_blank"><div class="rs-500px"></div></a>
         <div class="menu-movil-container menu-mov-oculto hidden-lg hidden-md">
-                <div class="menu-item-mov"><a href="index.php">Inicio</a></div>
-                <div class="menu-item-mov"><a href="galeria.php">Galer&iacute;a</a></div>
-                <div class="menu-item-mov"><a href="biografia.php">Biograf&iacute;a</a></div>
-                <div class="menu-item-mov"><a href="servicios.php">Servicios</a></div>
-                <div class="menu-item-mov"><a href="contacto.php">Contacto</a></div>
+                <a href="index.php"><div class="menu-item-mov">Inicio</div></a>
+                <a href="galeria.php"><div class="menu-item-mov">Galer&iacute;a</div></a>
+                <a href="biografia.php"><div class="menu-item-mov">Biograf&iacute;a</div></a>
+                <a href="servicios.php"><div class="menu-item-mov">Servicios</div></a>
+                <a href="contacto.php"><div class="menu-item-mov">Contacto</div></a>
         </div>
         <div class="navbar-dsk hidden-sm hidden-xs">
             <div class="container informacion">
@@ -71,6 +68,7 @@ include_once dirname(__FILE__).'/basics/login.php';
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
             </div>
         </div>
@@ -83,8 +81,8 @@ include_once dirname(__FILE__).'/basics/login.php';
                         <div class="contacto-informacion">
                             <strong style="font-size: x-large" ><?php echo $CONTACTINFO->getNombre(); ?></strong><br>
                             <?php echo $CONTACTINFO->getDescripcion(); ?><br><br>
-                            <?php echo $CONTACTINFO->getDireccion()!=""?"<strong>Direccion:&nbsp;</strong>".$CONTACTINFO->getDireccion().", ".$CONTACTINFO->getPais()."<br>":""; ?>
-                            <?php echo $CONTACTINFO->getTelefono()!=""?"<strong>Telefono:&nbsp;</strong>".$CONTACTINFO->getTelefono()."<br>":""; ?>
+                            <?php echo $CONTACTINFO->getDireccion()!=""?"<strong>Direcci&oacute;n:&nbsp;</strong>".$CONTACTINFO->getDireccion().", ".$CONTACTINFO->getPais()."<br>":""; ?>
+                            <?php echo $CONTACTINFO->getTelefono()!=""?"<strong>Tel&eacute;fono:&nbsp;</strong>".$CONTACTINFO->getTelefono()."<br>":""; ?>
                             <?php echo $CONTACTINFO->getCelular()!=""?"<strong>Celular:&nbsp;</strong>".$CONTACTINFO->getCelular()."<br>":""; ?>
                         </div>
                         <div class="contacto-formulario">
@@ -118,6 +116,7 @@ include_once dirname(__FILE__).'/basics/login.php';
                             </form>
                         </div>                 
                     </div>
+                    <div class="visible-lg-block visible-md-block col-lg-1 col-md-1">&nbsp;</div><div class="mosca col-md-10 col-lg-10">Todas las fotograf&iacute;as y derechos reservados por <strong>&copy; Karina Delgado Photography</strong> / Hecho por <a href="http://www.andikam.com" target="_blank">ANDIKAM SAS</a> Colombia 2015</div>
                 </div>
             </div>
     </body>

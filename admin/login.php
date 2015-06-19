@@ -1,12 +1,5 @@
 <?php
-    if(isset($_REQUEST["cs"]) && $_REQUEST["cs"]=='1'){
-    //Cerrar Sesión
-        $_SESSION=array();
-        if(session_status()==PHP_SESSION_ACTIVE){
-            session_destroy();
-        }
-    }
-    include_once dirname(__FILE__).'/../basics/basic.php';
+    include_once dirname(__FILE__).'/../basics/login.php';
     $login = new loginfo();
     if($login->verificarSesion()=='ADMIN'){
         header('Location: '.$login->GetSiteFullWebUrl().'/admin/index.php');
