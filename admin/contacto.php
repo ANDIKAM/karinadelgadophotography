@@ -19,6 +19,7 @@
                 $CONTACTINFO->setDireccion($_REQUEST["direccion"]);
                 $CONTACTINFO->setCelular($_REQUEST["celular"]);
                 $CONTACTINFO->setTelefono($_REQUEST["telefono"]);
+                $CONTACTINFO->setCorreo($_REQUEST["correo"]);
             }
     }
     
@@ -137,7 +138,7 @@
                         </li>
                         <li><a class="ajax-link" href="servicios.php"><i class="glyphicon glyphicon-camera"></i><span> Servicios</span></a>
                         </li>
-                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
+                        <li><a class="ajax-link" href="http://email.karinadelgadophotography.com/etc/apps/webmail/" target="_blank"><i class="glyphicon glyphicon-envelope"></i><span> Correo Electrónico</span></a>
                         </li>
                     </ul>
                 </div>
@@ -218,6 +219,10 @@
                        <div class="form-group">
                            <label for=telefono">Tel&eacute;fono:</label>
                           <input type="text" value="<?php echo $CONTACTINFO->getTelefono(); ?>" class="form-control" name="telefono" id="telefono" placeholder="Ingrese un teléfono fijo">
+                       </div>
+                       <div class="form-group">
+                           <label for=correo">Correo Electr&oacute;nico:</label>
+                          <input type="text" value="<?php echo $CONTACTINFO->getCorreo(); ?>" class="form-control" name="correo" id="correo" placeholder="Ingrese un correo electrónico">
                        </div>
                        <div style="width: 100%; text-align: right"><a class="btn btn-primary" style="width: 130px;" href="#" onClick="ActualizarContactInformation()" role="button">Actualizar</a></div>
                    </form>

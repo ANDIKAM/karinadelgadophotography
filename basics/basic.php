@@ -459,6 +459,7 @@ class contactinfo extends HTMLUtils{
     private $PathToFile;
     private $URLWeb;
     private $URLDoc;
+    private $correo;
     function contactinfo($URLDoc,$URLWeb){
         $this->URLWeb=$URLWeb;
         $this->URLDoc=$URLDoc;
@@ -475,6 +476,7 @@ class contactinfo extends HTMLUtils{
         $this->longitud = $RESULTADO[0]["longitud"];
         $this->latitud = $RESULTADO[0]["latitud"];
         $this->descripcion=$RESULTADO[0]["descripcion"];
+        $this->correo=$RESULTADO[0]["correo"];
     }
     public function getURLDocuments(){
         return $this->URLDoc;
@@ -501,6 +503,8 @@ class contactinfo extends HTMLUtils{
     public function getTexto_Raw(){return $this->texto;}
     public function getDescripcion(){return $this->fromHTMLEntities($this->descripcion);}
     public function getDescripcion_Raw(){return $this->descripcion;}
+    public function getCorreo(){return $this->fromHTMLEntities($this->correo);}
+    public function getCorreo_Raw(){return $this->correo;}
     public function getLongitud(){return $this->fromHTMLEntities($this->longitud);}
     public function getLongitud_Raw(){return $this->longitud;}
     public function getLatitud(){return $this->fromHTMLEntities($this->latitud);}
@@ -562,6 +566,16 @@ class contactinfo extends HTMLUtils{
         $var=$this->toHTMLEntities($var);
         if($var!=""){
             $this->direccion=$var;
+            $this->_Update();
+            return true;
+        }
+        return false;
+    }
+    public function setCorreo($var){
+        $var=trim($var);
+        $var=$this->toHTMLEntities($var);
+        if($var!=""){
+            $this->correo=$var;
             $this->_Update();
             return true;
         }
@@ -638,7 +652,8 @@ class contactinfo extends HTMLUtils{
                         "texto='$this->texto',".
                         "longitud='$this->longitud',".
                         "latitud='$this->latitud',".
-                        "descripcion='$this->descripcion'";
+                        "descripcion='$this->descripcion',".
+                        "correo='$this->correo'";
         $this->DataBase->ExecUpdate($Query);
         if (session_status()==PHP_SESSION_ACTIVE){
             $_SESSION['CONTACTINFO'] = $this;

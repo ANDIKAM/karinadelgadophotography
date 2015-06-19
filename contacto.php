@@ -1,5 +1,8 @@
 <?php
 include_once dirname(__FILE__).'/basics/login.php';
+
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,24 +17,58 @@ include_once dirname(__FILE__).'/basics/login.php';
         <script src="js/3d-falling-leaves.js"></script>
         <script src="js/rotate3Di.min.js"></script>
         <script type="text/javascript" src="js/jquery.jplayer.js"></script>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script src="js/global.js"></script>
         <script src="js/biografia.js"></script>
     </head>
+    <script type="text/javascript">
+        function ValidarForm(){
+            var Msg ="";
+            var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
+            $( ":input" ).css('border-color','#CCC');
+            if ($('#from-nombre').val()=="" || $('#from-nombre').val().length < 3) {
+                $('#from-nombre').css('border-color','#FF0000');
+                Msg += "- Nombre Campo Obligatorio \n";
+            }
+            if ($('#from-telefono').val().length < 6  || isNaN($('#from-telefono').val()) || $('#from-telefono').val()=="") {
+                $('#from-telefono').css('border-color','#FF0000');
+                Msg += "- Debe Introducir un número teléfono valido \n";
+            }
+            if (!regex.test($('#from-email').val().trim())) {
+                $('#from-email').css('border-color','#FF0000');
+                Msg += "- La dirección de correo no es valida \n";
+            }
+            if ($('#from-asunto').val()=="") {
+                $('#from-asunto').css('border-color','#FF0000');
+                Msg += "- Asunto Campo Obligatorio \n";
+            }
+            if ($('#from-mensaje').val()=="") {
+                $('#from-mensaje').css('border-color','#FF0000');
+                Msg += "- Mensaje Campo Obligatorio \n";
+            }
+            return Msg;
+        }
+        function EnviarContacto(){
+            
+            if($("#condiciones").is(':checked')) {
+                var ErrorMsg = ValidarForm();
+                if(ErrorMsg==""){
+                    var url='Correo.php?'+
+                    '&from-nombre='+$('#from-nombre').val()+
+                    '&from-telefono='+$('#from-telefono').val()+
+                    '&from-email='+$('#from-email').val()+
+                    '&from-asunto='+$('#from-asunto').val()+
+                    '&from-mensaje='+$('#from-mensaje').val()+
+                    '&SendMail=S';
+                    document.location.href = url;
+                }else{
+                    alert(ErrorMsg);
+                }
+            } else {
+                    alert("Debe aceptar las condiciones para enviar su información de contacto");
+            }
+        }
+    </script>
     <body>
-        <div class="hidden">
-            <?php echo "caching images... Descargar todas las Imagenes"; ?>
-            <img src="img/spiner.gif" />
-            <img src="galeria/01.jpg" />
-            <img src="galeria/02.jpg" />
-            <img src="galeria/03.jpg" />
-            <img src="galeria/04.jpg" />
-            <img src="galeria/05.jpg" />
-            <img src="galeria/06.jpg" />
-            <img src="galeria/07.jpg" />
-            <img src="galeria/08.jpg" />
-            <img src="galeria/09.jpg" />
-        </div>
         <div class="leaves-right"></div>
         <div class="leaves-left"></div>
         <div class="arbol-right"></div>
@@ -68,7 +105,6 @@ include_once dirname(__FILE__).'/basics/login.php';
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
             </div>
         </div>
@@ -84,16 +120,17 @@ include_once dirname(__FILE__).'/basics/login.php';
                             <?php echo $CONTACTINFO->getDireccion()!=""?"<strong>Direcci&oacute;n:&nbsp;</strong>".$CONTACTINFO->getDireccion().", ".$CONTACTINFO->getPais()."<br>":""; ?>
                             <?php echo $CONTACTINFO->getTelefono()!=""?"<strong>Tel&eacute;fono:&nbsp;</strong>".$CONTACTINFO->getTelefono()."<br>":""; ?>
                             <?php echo $CONTACTINFO->getCelular()!=""?"<strong>Celular:&nbsp;</strong>".$CONTACTINFO->getCelular()."<br>":""; ?>
+                            <?php echo $CONTACTINFO->getCorreo()!=""?"<strong>Correo Electr&oacute;nico:&nbsp;</strong>".$CONTACTINFO->getCorreo()."<br>":""; ?>
                         </div>
                         <div class="contacto-formulario">
-                            <form>
+                            <form action="Correo.php" method="post" >
                             <div class="form-group">
                               <label for="from-nombre">Nombre:</label>
-                              <input type="text" class="form-control" name="from-nombre" id="from-nombre" placeholder="Correo electrónico">
+                              <input type="text" class="form-control" name="from-nombre" id="from-nombre" placeholder="Nombre">
                             </div>
                             <div class="form-group">
                               <label for="from-telefono">Tel&eacute;fono:</label>
-                              <input type="tel" class="form-control" name="from-telefono" id="from-nombre" placeholder="Telefono">
+                              <input type="tel" class="form-control" name="from-telefono" id="from-telefono" placeholder="Telefono">
                             </div>
                             <div class="form-group">
                               <label for="from-email">Correo electr&oacute;nico:</label>
@@ -101,18 +138,20 @@ include_once dirname(__FILE__).'/basics/login.php';
                             </div>
                             <div class="form-group">
                               <label for="from-asunto">Asunto:</label>
-                              <input type="text" class="form-control" name="from-asunto" id="from-asunto" placeholder="Correo electrónico">
+                              <input type="text" class="form-control" name="from-asunto" id="from-asunto" placeholder="Asunto">
                             </div>
                             <div class="form-group">
                               <label for="from-mensaje">Mensaje:</label>
-                              <textarea class="form-control" id="from-mensaje" name="from-mensaje" rows="3" placeholder="Escriba su mensaje aquí"></textarea>
+                              <textarea class="form-control" id="from-mensaje" name="from-mensaje" rows="3" placeholder="Escriba su mensaje aquí" maxlength="300"></textarea>
                             </div>
                             <div class="checkbox">
                               <label>
-                                <input type="checkbox" name="no-robot"> Acepto enviar el formulario de contacto con mi informaci&oacute;n personal.
+                                <input name="condiciones" id="condiciones" type="checkbox" name="no-robot"> Acepto enviar el formulario de contacto con mi informaci&oacute;n personal.
+                                <input type="hidden" class="form-control" name="SendMail" id="SendMail" value="S">
                               </label>
                             </div>
-                            <button type="submit" style="font-size: large" class="btn btn-primary">Enviar Mensaje</button>
+<!--                            <button  onclick="EnviarContacto()" style="font-size: large" class="btn btn-primary">Enviar Mensaje</button>-->
+                                <input style="font-size: large" class="btn btn-primary" type="button" name="actualizar" id="button" value="Enviar Mensaje" onclick="EnviarContacto()" />
                             </form>
                         </div>                 
                     </div>
@@ -120,4 +159,14 @@ include_once dirname(__FILE__).'/basics/login.php';
                 </div>
             </div>
     </body>
+					<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-64261247-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 </html>
